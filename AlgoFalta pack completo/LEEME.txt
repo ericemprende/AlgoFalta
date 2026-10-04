@@ -1,0 +1,44 @@
+ALGOFALTA | IDENTIDAD VISUAL 1.0 | OCTUBRE 2026
+
+La opción “El espacio que falta” se ha normalizado en vector para producción.
+La referencia gráfica inicial tenía letras generadas; esta entrega define Nunito Black
+900 como la tipografía del logo. Usar los SVG en curvas, no recomponer el nombre.
+
+COLORES
+Frambuesa #E83E75. Profundo #D9366B. Berenjena #302036. Blanco #FFFFFF.
+Fondo de apoyo #FFF4F7. Degradado CSS: linear-gradient(135deg,#E83E75,#D9366B).
+Logo horizontal plano. Degradado solo en fondos digitales e icono de app.
+
+ARCHIVOS
+logos/: SVG escalables con texto en curvas; PNG transparentes de 2400 px de ancho.
+icons/: maestro de app 1024 x 1024 opaco y cuadrado, plano y degradado.
+favicon/: ICO multirresolución (16,32,48,64), PNG y SVG; escala óptica mayor.
+android/: copiar ic_launcher_foreground.xml e ic_launcher_background.xml a res/drawable;
+  copiar ic_launcher.xml a res/mipmap-anydpi-v26. Recursos clásicos requieren
+  generación de densidades en el proyecto. Configurar android:icon en el manifiesto.
+  Foreground SVG/PNG para revisión. Fondo XML con degradado equivalente.
+  Recursos base de integración; no se realizó una compilación en una app nativa.
+web/: copiar y ajustar rutas del ejemplo HTML, CSS y site.webmanifest.
+  El manifest usa rutas relativas al archivo; ajustar start_url al despliegue.
+fonts/: Nunito variable y estáticas; licencia SIL OFL incluida.
+preview/: láminas y muestras educativas; los archivos wrong-* muestran usos prohibidos.
+  Nunca utilizar muestras wrong-* como logo de producción.
+
+IOS
+Usar icons/algofalta-app-degradado-1024.png como maestro en el catálogo de iconos
+principal. No pre-redondear ni introducir transparencia. Completar las variantes
+que solicite el proyecto de Xcode. Esta entrega no incluye un proyecto iOS compilado.
+
+IMPRESIÓN
+Usar SVG plano o de una tinta. Los valores CMYK del manual son conversiones
+orientativas sin perfil de imprenta; aprobar prueba física antes de producir.
+
+TIPOGRAFÍA
+Nunito Black 900: logo. ExtraBold 800: títulos. Bold 700: etiquetas.
+Regular 400 y SemiBold 600: texto. La familia se distribuye con su OFL original.
+Fuente obtenida del repositorio google/fonts, carpeta ofl/nunito.
+
+INTEGRIDAD
+Preservar hueco, proporciones y separación. Área libre mínima: ancho de la muesca.
+Logo horizontal >= 140 px. Símbolo >= 24 px; para 16 px usar favicon dedicado.
+El manual y los ejemplos de interfaz son una guía visual, no una aplicación funcional.

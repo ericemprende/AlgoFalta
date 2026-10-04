@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AlgoFalta App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<style>
+/* Prototipo navegable de la app móvil (antes de pasarla a React Native + Expo). Datos de ejemplo. */
+:root{
+  --frambuesa:#E83E75; --frambuesa-2:#D9366B; --berenjena:#302036;
+  --bg:#F4EEF1; --screen:#FFFFFF; --surface:#FFFFFF; --soft:#FFF4F7; --fg:#302036; --muted:#6E5F73; --line:#F1E3E9;
+  --btn:#302036; --btn-fg:#fff; --accent:#E83E75; --accent-ink:#C42A5D;
+  --ok:#1E7A4C; --ok-bg:#E3F5EB; --wa:#E7F7EE; --bubble:#FFFFFF; --bubble-me:#DDF5E4; --wa-bg:#EFE7DE;
+  --shadow:0 6px 18px rgba(48,32,54,.08);
+  --font:"Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#140D18; --screen:#1E1423; --surface:#2A1E30; --soft:#2F2136; --fg:#FBEFF4; --muted:#C2AFC7; --line:#3E2D45;
+    --btn:#E83E75; --accent:#FF6E9C; --accent-ink:#FF8DB0; --ok:#8FE0B1; --ok-bg:#173326;
+    --bubble:#33253A; --bubble-me:#1F4A33; --wa-bg:#181018; --shadow:0 6px 18px rgba(0,0,0,.35); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#140D18; --screen:#1E1423; --surface:#2A1E30; --soft:#2F2136; --fg:#FBEFF4; --muted:#C2AFC7; --line:#3E2D45;
+  --btn:#E83E75; --accent:#FF6E9C; --accent-ink:#FF8DB0; --ok:#8FE0B1; --ok-bg:#173326;
+  --bubble:#33253A; --bubble-me:#1F4A33; --wa-bg:#181018; --shadow:0 6px 18px rgba(0,0,0,.35); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.4;min-height:100vh;display:flex;gap:48px;align-items:center;justify-content:center;padding:32px 16px;flex-wrap:wrap}
+h1,h2,h3{margin:0;font-weight:800;line-height:1.2}
+p{margin:0}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+.side{max-width:320px;display:flex;flex-direction:column;gap:14px}
+.side h1{font-size:2rem;font-weight:900}
+.side p{color:var(--muted)}
+.side ol{margin:0;padding-left:20px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.side ol b{color:var(--fg)}
+.side .btn{align-self:flex-start}
+.phone{width:min(390px,100%);height:min(800px,calc(100vh - 64px));min-height:640px;background:var(--screen);border-radius:44px;box-shadow:0 0 0 10px var(--berenjena),0 30px 60px rgba(48,32,54,.25);overflow:hidden;display:flex;flex-direction:column;position:relative}
+.status{display:flex;justify-content:space-between;padding:14px 28px 6px;font-size:.8rem;font-weight:800}
+.screen{flex:1;overflow-y:auto;display:none;flex-direction:column;gap:16px;padding:8px 18px 18px}
+.screen.on{display:flex}
+.top{display:flex;justify-content:space-between;align-items:center}
+.top small{color:var(--muted);font-weight:700;display:block}
+.top h2{font-size:1.4rem;font-weight:900}
+.avatars{display:flex}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;font-size:.8rem;border:2px solid var(--screen);margin-left:-8px;flex:none}
+.add{display:flex;gap:8px;background:var(--soft);border-radius:99px;padding:6px 6px 6px 16px;align-items:center}
+.add input{flex:1;border:0;background:transparent;min-width:0;padding:6px 0}
+.add input:focus{outline:none}
+.add:focus-within{box-shadow:0 0 0 2px var(--accent)}
+.round{width:38px;height:38px;border-radius:50%;border:0;background:var(--btn);color:var(--btn-fg);display:grid;place-items:center;cursor:pointer;flex:none}
+.round svg{width:18px;height:18px}
+.cats{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.cat{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;font-size:.78rem;font-weight:800;cursor:pointer;min-width:74px}
+.cat .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:1.2rem;background:var(--soft)}
+.cat[aria-pressed="true"]{background:var(--berenjena);color:#fff;border-color:var(--berenjena)}
+.cat[aria-pressed="true"] .ic{background:rgba(255,255,255,.12)}
+.section-t{display:flex;justify-content:space-between;align-items:baseline;font-weight:800}
+.section-t small{color:var(--muted);font-weight:700}
+.items{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;box-shadow:var(--shadow)}
+.item .plate{width:46px;height:46px;border-radius:50%;flex:none;background:var(--soft) center/cover;display:grid;place-items:center;font-weight:900;color:var(--accent-ink)}
+.item .info{flex:1;min-width:0}
+.item .info b{display:block;font-weight:800}
+.item .info small{color:var(--muted);font-weight:600;font-size:.8rem}
+.item .pr{font-weight:800;font-variant-numeric:tabular-nums;font-size:.9rem}
+.check{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);background:transparent;cursor:pointer;flex:none;display:grid;place-items:center}
+.check svg{width:14px;height:14px;opacity:0;color:#fff}
+.item.done{opacity:.55}
+.item.done .info b{text-decoration:line-through}
+.item.done .check{background:var(--ok);border-color:var(--ok)}
+.item.done .check svg{opacity:1}
+.via{display:inline-flex;align-items:center;gap:3px;font-size:.7rem;font-weight:800;color:#1E6B43;background:var(--wa);border-radius:99px;padding:1px 7px;margin-left:4px}
+.total{background:var(--berenjena);color:#fff;border-radius:20px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.total small{opacity:.75;font-weight:700;display:block;font-size:.75rem}
+.total b{font-size:1.3rem;font-weight:900;font-variant-numeric:tabular-nums}
+.total button{background:var(--frambuesa);color:#fff;border:0;border-radius:99px;padding:10px 14px;font-weight:800;cursor:pointer}
+.store{display:flex;gap:6px}
+.store button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-weight:800;font-size:.8rem;cursor:pointer}
+.store button[aria-pressed="true"]{background:var(--frambuesa);color:#fff;border-color:var(--frambuesa)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.person{display:flex;align-items:center;gap:12px;padding:8px 0}
+.person .av{margin:0;width:38px;height:38px}
+.person .info{flex:1}
+.person .info small{color:var(--muted);font-weight:700}
+.bal{font-weight:900;font-variant-numeric:tabular-nums}
+.pos{color:var(--ok)} .neg{color:var(--accent-ink)}
+.meter{height:8px;background:var(--soft);border-radius:99px;overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.transfer{display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:14px;padding:10px 12px;font-weight:700;font-size:.9rem}
+.transfer b{margin-left:auto;font-weight:900}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:0;border-radius:99px;padding:13px 20px;background:var(--btn);color:var(--btn-fg);font-weight:800;cursor:pointer;text-decoration:none}
+.btn.wide{width:100%}
+.btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 2px var(--line)}
+.wa-head{display:flex;align-items:center;gap:10px;background:#075E54;color:#fff;margin:-8px -18px 0;padding:10px 16px}
+.wa-head .av{margin:0;background:var(--frambuesa)}
+.wa-head small{opacity:.8;display:block;font-size:.75rem}
+.chat{background:var(--wa-bg);margin:0 -18px -18px;padding:14px;flex:1;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:82%;background:var(--bubble);border-radius:12px;padding:8px 10px;font-size:.88rem;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.msg b{display:block;font-size:.75rem;color:var(--accent-ink)}
+.msg.me{align-self:flex-end;background:var(--bubble-me)}
+.msg.bot b{color:#1E6B43}
+.voice{display:flex;align-items:center;gap:8px}
+.voice i{flex:1;height:4px;background:currentColor;opacity:.3;border-radius:99px;min-width:90px}
+.typing{font-size:.8rem;color:var(--muted);font-style:italic}
+.plan-hero{background:linear-gradient(135deg,var(--frambuesa),var(--frambuesa-2));color:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.plan-hero b{font-size:2rem;font-weight:900}
+.plan-hero ul{margin:6px 0 0;padding-left:18px;font-weight:700}
+.credits{display:flex;flex-direction:column;gap:10px}
+.credits .row{display:flex;justify-content:space-between;font-weight:700;font-size:.9rem}
+.tabs{display:flex;justify-content:space-around;border-top:1px solid var(--line);padding:8px 6px 18px;background:var(--screen)}
+.tab{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.7rem;font-weight:800;color:var(--muted);cursor:pointer;padding:4px 8px;border-radius:10px}
+.tab svg{width:22px;height:22px}
+.tab[aria-current="page"]{color:var(--accent)}
+.empty{text-align:center;color:var(--muted);padding:20px;font-weight:700}
+@media (max-width:760px){.side{text-align:left;max-width:390px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="bag" viewBox="0 0 256 312"><path d="M76 92 A52 52 0 0 1 180 92" fill="none" stroke="currentColor" stroke-width="30"/><path fill="currentColor" d="M0 116q0-20 20-20H136V164q0 4 4 4H204q4 0 4-4V96H236q20 0 20 20V246q0 66-66 66H66Q0 312 0 246Z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M16 13h2M2 10h20M6 6V5a2 2 0 0 1 2-2h10"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></symbol>
+</defs></svg>
+
+<div class="side">
+  <svg width="40" height="49" style="color:var(--frambuesa)"><use href="#bag"/></svg>
+  <h1>Así va quedando la app</h1>
+  <p>Prototipo navegable de las cuatro pantallas principales. Todo funciona con datos de ejemplo.</p>
+  <ol>
+    <li><b>Lista:</b> agrega productos, márcalos y cambia de supermercado para ver el total.</li>
+    <li><b>Cuentas:</b> quién pagó, cuánto le toca a cada uno y cómo quedar a paz y salvo.</li>
+    <li><b>Bot:</b> así se ve el grupo de WhatsApp con el bot leyendo mensajes y audios.</li>
+    <li><b>Plan:</b> Plus Hogar a $12.900 con sus créditos.</li>
+  </ol>
+  <button class="btn ghost" id="theme" type="button">Cambiar tema</button>
+</div>
+
+<div class="phone" role="application" aria-label="Prototipo de la app AlgoFalta">
+  <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+
+  <!-- LISTA -->
+  <section class="screen on" id="s-lista">
+    <div class="top">
+      <div><small>Casa Rodríguez</small><h2>Lo que falta</h2></div>
+      <div class="avatars" id="avatars"></div>
+    </div>
+    <form class="add" id="addForm">
+      <input id="newItem" placeholder="Agregar algo… ej. leche" aria-label="Agregar producto" autocomplete="off">
+      <button class="round" aria-label="Agregar"><svg><use href="#i-plus"/></svg></button>
+    </form>
+    <div class="cats" id="cats"></div>
+    <div class="section-t"><span>Pendientes</span><small id="count"></small></div>
+    <div class="items" id="items"></div>
+    <div class="section-t"><span>Comparar en</span></div>
+    <div class="store" id="stores"></div>
+    <div class="total"><div><small id="tlabel">Total de referencia</small><b id="tval"></b></div><button type="button" id="buy">Registrar compra</button></div>
+  </section>
+
+  <!-- CUENTAS -->
+  <section class="screen" id="s-cuentas">
+    <div class="top"><div><small>Octubre</small><h2>Cuentas claras</h2></div></div>
+    <div class="card">
+      <div class="section-t"><span>Gastado en el mes</span><small id="gtotal"></small></div>
+      <div id="people"></div>
+    </div>
+    <div class="section-t"><span>Para quedar a paz y salvo</span></div>
+    <div id="transfers" style="display:flex;flex-direction:column;gap:8px"></div>
+    <div class="section-t"><span>Últimas compras</span></div>
+    <div class="items" id="purchases"></div>
+  </section>
+
+  <!-- BOT -->
+  <section class="screen" id="s-bot">
+    <div class="wa-head"><span class="av">AF</span><div><b>Casa Rodríguez 🛒</b><small>Laura, Andrés, Sofi, Bot AlgoFalta</small></div></div>
+    <div class="chat" id="chat"></div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="screen" id="s-plan">
+    <div class="top"><div><small>Tu grupo</small><h2>Plan</h2></div></div>
+    <div class="plan-hero">
+      <span style="font-weight:800">Plus Hogar</span>
+      <b>$12.900<small style="font-size:1rem">/mes</small></b>
+      <span style="opacity:.9;font-weight:700">o $129.000 al año (2 meses gratis)</span>
+      <ul><li>Bot en WhatsApp con voz</li><li>Grupos ilimitados en la app</li><li>Estadísticas y presupuesto</li><li>Mercado recurrente</li></ul>
+    </div>
+    <div class="card credits">
+      <div class="section-t"><span>Créditos del bot este mes</span><small>se renuevan el 1 nov</small></div>
+      <div><div class="row"><span>Mensajes leídos</span><span>412 / 600</span></div><div class="meter"><i style="width:69%"></i></div></div>
+      <div><div class="row"><span>Minutos de audio</span><span>23 / 60</span></div><div class="meter"><i style="width:38%"></i></div></div>
+      <p style="font-size:.82rem;color:var(--muted)">Si se acaban, la lista sigue funcionando en la app. Puedes comprar un paquete extra.</p>
+    </div>
+    <button class="btn wide" type="button">Comprar 300 créditos · $4.900</button>
+    <button class="btn wide ghost" type="button">Ver otros planes</button>
+  </section>
+
+  <nav class="tabs" aria-label="Secciones">
+    <button class="tab" data-s="lista" aria-current="page"><svg><use href="#i-list"/></svg>Lista</button>
+    <button class="tab" data-s="cuentas"><svg><use href="#i-wallet"/></svg>Cuentas</button>
+    <button class="tab" data-s="bot"><svg><use href="#i-chat"/></svg>Bot</button>
+    <button class="tab" data-s="plan"><svg><use href="#i-star"/></svg>Plan</button>
+  </nav>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const fmt = n => '$ ' + Math.round(n).toLocaleString('es-CO');
+const IMG = '../landing/img/';
+const PEOPLE = [
+  {id:'L', name:'Laura', color:'#E83E75', paid:186400},
+  {id:'A', name:'Andrés', color:'#302036', paid:92300},
+  {id:'S', name:'Sofi', color:'#F59E0B', paid:41800}
+];
+const CATS = [['todo','🧺','Todo'],['despensa','🥫','Despensa'],['fruver','🥑','Fruver'],['lacteos','🥛','Lácteos'],['aseo','🧼','Aseo']];
+// precio de referencia por tienda: D1, Ara, Éxito
+let items = [
+  {n:'Huevos AA x30', c:'lacteos', p:[16900,17500,19900], img:'huevos.jpg', by:'L'},
+  {n:'Arroz Diana 5 kg', c:'despensa', p:[21900,22400,24800], img:'arroz.jpg', by:'A', wa:true},
+  {n:'Aguacate Hass x3', c:'fruver', p:[7900,8500,9900], img:'aguacate.jpg', by:'S', wa:true},
+  {n:'Café Sello Rojo 500 g', c:'despensa', p:[14900,15300,17200], img:'cafe.jpg', by:'L'},
+  {n:'Leche entera x6', c:'lacteos', p:[19800,20400,22900], by:'A'},
+  {n:'Papel higiénico x12', c:'aseo', p:[18900,19500,23900], by:'S', done:true}
+];
+const STORES = ['D1','Ara','Éxito'];
+let cat = 'todo', store = 0;
+const KNOWN = {leche:['lacteos',3300],pan:['despensa',4500],queso:['lacteos',9800],tomate:['fruver',3900],banano:['fruver',2900],jabón:['aseo',6900],detergente:['aseo',15900],aceite:['despensa',12900],azúcar:['despensa',4200],pollo:['despensa',14900]};
+
+function renderAvatars(){ $('#avatars').innerHTML = PEOPLE.map(p=>`<span class="av" style="background:${p.color}" title="${p.name}">${p.id}</span>`).join(''); }
+function renderCats(){
+  $('#cats').innerHTML = CATS.map(([id,ic,l])=>`<button class="cat" data-c="${id}" aria-pressed="${cat===id}"><span class="ic">${ic}</span>${l}</button>`).join('');
+  document.querySelectorAll('.cat').forEach(b=>b.onclick=()=>{cat=b.dataset.c;renderCats();renderItems();});
+}
+function renderStores(){
+  $('#stores').innerHTML = STORES.map((s,i)=>`<button data-st="${i}" aria-pressed="${store===i}">${s}</button>`).join('');
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{store=+b.dataset.st;renderStores();renderItems();});
+}
+function renderItems(){
+  const list = items.filter(i=>cat==='todo'||i.c===cat);
+  const pend = items.filter(i=>!i.done);
+  $('#count').textContent = `${pend.length} productos`;
+  $('#items').innerHTML = list.length ? list.map(i=>{
+    const who = PEOPLE.find(p=>p.id===i.by);
+    return `<div class="item ${i.done?'done':''}">
+      <div class="plate" style="${i.img?`background-image:url(${IMG+i.img})`:''}">${i.img?'':i.n[0]}</div>
+      <div class="info"><b>${i.n}</b><small>${who.name}${i.wa?'<span class="via">vía WhatsApp</span>':''}</small></div>
+      <span class="pr">${fmt(i.p[store])}</span>
+      <button class="check" data-i="${items.indexOf(i)}" aria-label="Marcar ${i.n}" aria-pressed="${!!i.done}"><svg><use href="#i-check"/></svg></button>
+    </div>`;}).join('') : '<p class="empty">Nada pendiente aquí 🎉</p>';
+  document.querySelectorAll('.check').forEach(b=>b.onclick=()=>{const it=items[b.dataset.i]; it.done=!it.done; renderItems();});
+  const t = pend.reduce((s,i)=>s+i.p[store],0);
+  const cheapest = [0,1,2].reduce((b,k)=>pend.reduce((s,i)=>s+i.p[k],0) < pend.reduce((s,i)=>s+i.p[b],0) ? k : b, 0);
+  $('#tlabel').textContent = `Total de referencia en ${STORES[store]}${store===cheapest?' · el más barato':''}`;
+  $('#tval').textContent = fmt(t);
+}
+$('#addForm').onsubmit = e => {
+  e.preventDefault();
+  const v = $('#newItem').value.trim(); if(!v) return;
+  const k = Object.keys(KNOWN).find(k=>v.toLowerCase().includes(k));
+  const [c,base] = k ? KNOWN[k] : ['despensa',5000];
+  items.unshift({n:v[0].toUpperCase()+v.slice(1), c, p:[base, Math.round(base*1.04/100)*100, Math.round(base*1.15/100)*100], by:'L'});
+  $('#newItem').value=''; cat='todo'; renderCats(); renderItems();
+};
+$('#buy').onclick = () => {
+  const bought = items.filter(i=>i.done); if(!bought.length){ alert('Marca primero lo que compraste.'); return; }
+  const t = bought.reduce((s,i)=>s+i.p[store],0);
+  PEOPLE[0].paid += t; purchases.unshift(['Laura', STORES[store], bought.length, t, 'Hoy']);
+  items = items.filter(i=>!i.done); renderItems(); renderCuentas(); go('cuentas');
+};
+
+/* Cuentas claras */
+let purchases = [['Laura','D1',14,98400,'Ayer'],['Andrés','Éxito',9,92300,'Lun'],['Laura','Ara',11,88000,'Sáb'],['Sofi','Tienda de barrio',5,41800,'Jue']];
+function renderCuentas(){
+  const total = PEOPLE.reduce((s,p)=>s+p.paid,0), share = total/PEOPLE.length, max = Math.max(...PEOPLE.map(p=>p.paid));
+  $('#gtotal').textContent = fmt(total) + ' · ' + fmt(share) + ' c/u';
+  $('#people').innerHTML = PEOPLE.map(p=>{ const b = p.paid-share; return `<div class="person"><span class="av" style="background:${p.color}">${p.id}</span>
+    <div class="info"><b>${p.name}</b><small> pagó ${fmt(p.paid)}</small><div class="meter"><i style="width:${p.paid/max*100}%;background:${p.color}"></i></div></div>
+    <span class="bal ${b>=0?'pos':'neg'}">${b>=0?'+':'−'}${fmt(Math.abs(b)).slice(2)}</span></div>`;}).join('');
+  // mínimo número de transferencias
+  const bal = PEOPLE.map(p=>({p, v:p.paid-share})); const out=[];
+  const deb = bal.filter(x=>x.v<-1).sort((a,b)=>a.v-b.v), cre = bal.filter(x=>x.v>1).sort((a,b)=>b.v-a.v);
+  let i=0,j=0; while(i<deb.length&&j<cre.length){ const m=Math.min(-deb[i].v,cre[j].v); out.push([deb[i].p,cre[j].p,m]); deb[i].v+=m; cre[j].v-=m; if(deb[i].v>-1)i++; if(cre[j].v<1)j++; }
+  $('#transfers').innerHTML = out.length ? out.map(([a,b,m])=>`<div class="transfer"><span class="av" style="background:${a.color};margin:0;width:28px;height:28px">${a.id}</span>${a.name} → ${b.name}<b>${fmt(m)}</b></div>`).join('') + '<button class="btn wide" type="button">Avisar por WhatsApp</button>' : '<p class="empty">Están a paz y salvo ✨</p>';
+  $('#purchases').innerHTML = purchases.map(([w,s,n,t,d])=>`<div class="item"><div class="plate">${s[0]}</div><div class="info"><b>${s}</b><small>${w} · ${n} productos · ${d}</small></div><span class="pr">${fmt(t)}</span></div>`).join('');
+}
+
+/* Bot de WhatsApp (animado) */
+const CHAT = [
+  ['me','Andrés','Se acabó el arroz y el aceite'],
+  ['','Sofi','<span class="voice">▶ <i></i> 0:07</span>'],
+  ['','Sofi','(nota de voz) "compren aguacates y pan para mañana"'],
+  ['','Laura','Yo voy al D1 en la tarde'],
+  ['bot','Bot AlgoFalta','Agregué a la lista: arroz, aceite, aguacate x3 y pan. 🛒'],
+  ['me','Andrés','@AlgoFalta cuánto llevamos?'],
+  ['bot','Bot AlgoFalta','Total estimado en D1: $ 86.400 (precio de referencia). Laura, te toca comprar hoy 💪']
+];
+let chatTimer;
+function playChat(){
+  clearTimeout(chatTimer); const el = $('#chat'); el.innerHTML=''; let k=0;
+  (function next(){
+    if(k>=CHAT.length){ el.insertAdjacentHTML('beforeend','<button class="btn ghost" id="replay" type="button" style="align-self:center;margin-top:8px">Ver de nuevo</button>'); $('#replay').onclick=playChat; return; }
+    const [c,w,t] = CHAT[k++];
+    if(c==='bot'){ el.insertAdjacentHTML('beforeend','<p class="typing">Bot AlgoFalta está escribiendo…</p>'); }
+    chatTimer = setTimeout(()=>{ el.querySelector('.typing')?.remove(); el.insertAdjacentHTML('beforeend',`<div class="msg ${c}"><b>${w}</b>${t}</div>`); el.parentElement.scrollTop=1e6; next(); }, c==='bot'?1300:700);
+  })();
+}
+
+/* Navegación */
+function go(s){
+  document.querySelectorAll('.tab').forEach(t=>{ if(t.dataset.s===s) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on')); $('#s-'+s).classList.add('on');
+  if(s==='bot') playChat(); else clearTimeout(chatTimer);
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>go(t.dataset.s));
+$('#theme').onclick = () => {
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+};
+renderAvatars(); renderCats(); renderStores(); renderItems(); renderCuentas();
+</script>
+</body>
+</html>

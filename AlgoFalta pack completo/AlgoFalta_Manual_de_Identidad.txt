@@ -1,0 +1,236 @@
+ALGOFALTA — MANUAL DE IDENTIDAD VISUAL
+
+Texto extraído del manual de 16 páginas, ordenado por bloques de lectura.
+Las imágenes y diagramas se encuentran en el PDF original.
+
+
+
+PÁGINA 1
+IDENTIDAD DE MARCA
+El espacio que falta.
+Una identidad cercana para comprar en equipo y salir con una idea del presupuesto.
+MANUAL + RECURSOS DIGITALES
+Logo, color, tipografía, aplicaciones y reglas para que AlgoFalta se vea
+siempre como AlgoFalta.
+
+PÁGINA 2
+01 / ESENCIA
+Que nunca falte lo importante.
+AlgoFalta reúne lo que hace falta en
+casa o en el negocio en una misma lista.
+Ayuda a coordinar compras y a conocer
+precios de referencia antes de salir.
+La promesa
+Que en la casa nunca falte nada y sepan
+cuánto va a costar el mercado antes de
+salir.
+CERCANA
+Habla como alguien que ayuda a organizar
+la compra cotidiana.
+CLARA
+Hace visible lo pendiente y presenta el
+presupuesto sin confusiones.
+COMPARTIDA
+Funciona para familias, parejas, roommates
+y equipos de trabajo.
+
+PÁGINA 3
+02 / FIRMA PRINCIPAL
+Una bolsa. Un espacio por completar.
+La muesca abierta es el rasgo distintivo: un elemento que todavía hace falta.
+SÍMBOLO
+Bolsa geométrica con asa redondeada y
+una pieza ausente.
+NOMBRE
+Una sola palabra: AlgoFalta. Siempre con A
+y F mayúsculas.
+ARCHIVO MAESTRO
+Usar el SVG suministrado. El texto ya está
+convertido a curvas.
+
+PÁGINA 4
+03 / CONSTRUCCIÓN
+Una geometría que se puede repetir.
+El símbolo se normalizó en vector a partir de la propuesta elegida. Esta es la versión maestra de producción.
+Base del símbolo: 256 × 312 unidades.
+La pieza ausente mide 72 × 72 unidades en su caja exterior.
+Sus esquinas interiores se suavizan sin cerrar la abertura.
+El asa y el cuerpo conservan un pequeño espacio entre sí. No
+unirlos ni agregar una pieza flotante.
+La firma usa una separación de 64 unidades entre el símbolo y
+el inicio tipográfico. Mantener la proporción del SVG completo.
+
+PÁGINA 5
+04 / PROTECCIÓN Y ESCALA
+Dale espacio para respirar.
+X equivale al ancho exterior de la pieza ausente: 72 unidades de construcción.
+X
+X
+Área libre mínima: X en los cuatro lados de la caja visible. No
+acercar textos, bordes o imágenes.
+Firma horizontal: mínimo 140 px o 35 mm. Símbolo aislado: 24 px o 6
+mm. A 16 px, usar el favicon optimizado.
+
+PÁGINA 6
+05 / VERSIONES
+Una marca, distintos fondos.
+Elegir la versión por contraste. El hueco siempre deja ver el fondo real.
+01 Principal / fondo blanco 02 Frambuesa + blanco / oscuro
+03 Una tinta / impresión 04 Blanco / fondo de marca
+
+PÁGINA 7
+06 / COLOR
+Frambuesa con profundidad.
+Dos colores de marca, blanco y un tono derivado para el degradado. El rosa pálido es un fondo de apoyo.
+Frambuesa
+#E83E75
+RGB 232 / 62 / 117 CMYK aprox. 0 / 73
+/ 50 / 9
+Frambuesa profundo
+#D9366B
+RGB 217 / 54 / 107 CMYK aprox. 0 / 75
+/ 51 / 15
+Berenjena
+#302036
+RGB 48 / 32 / 54 CMYK aprox. 11 / 41 /
+0 / 79
+Rosa de apoyo
+#FFF4F7
+RGB 255 / 244 / 247 Blanco base:
+#FFFFFF
+Valores CMYK orientativos: ajustar al perfil de impresión y aprobar una prueba de color. No se define equivalencia Pantone.
+
+PÁGINA 8
+07 / DEGRADADO
+Sutil, suave y siempre igual.
+Reservado para fondos digitales, el ícono de app y piezas de comunicación de gran tamaño.
+#E83E75
+#D9366B
+135°
+De arriba a la izquierda hacia abajo a la
+derecha.
+Solo dos paradas: 0% y 100%.
+Opacidad 100%.
+Sin sombras, resplandores, ruido ni
+efecto metálico.
+El logotipo horizontal permanece plano. Para favicon, bordado, sellos y tamaños pequeños, usar color sólido o una tinta.
+
+PÁGINA 9
+08 / TIPOGRAFÍA
+Amigable, redondeada y legible.
+Nunito es la familia del sistema. Los archivos de fuente y su licencia OFL se incluyen en el paquete.
+Nunito
+Aa Bb Cc / 0123456789
+á é í ó ú ü ñ ¿? ¡!
+El logotipo usa Nunito Black 900, normalizado para esta versión
+vectorial. No volver a escribirlo para reproducir la marca: colocar el
+SVG.
+LOGOTIPO
+Black 900
+Archivo vectorial en curvas
+TÍTULOS
+ExtraBold 800
+32 / 40 px en interfaces
+BOTONES Y ETIQUETAS
+Bold 700 / ExtraBold 800
+16 / 20 px; frases cortas
+TEXTO Y PRECIOS
+Regular 400 / SemiBold 600
+16 / 24 px; cifras claras
+
+PÁGINA 10
+09 / APP Y FAVICON
+Reconocible incluso en pequeño.
+El ícono no lleva texto. El maestro de 1024 × 1024 es opaco y cuadrado, sin esquinas transparentes.
+Vista con recorte
+48 px 32 px 16 px
+El favicon usa una escala óptica mayor y color plano
+para conservar la muesca a 16 px. No usar esta
+ampliación como ícono adaptativo.
+Zona del símbolo en el maestro: 56% de la altura. Android: capas separadas sobre lienzo de 108 × 108; vista final según máscara del sistema.
+
+PÁGINA 11
+10 / USOS INCORRECTOS
+La pieza que falta no se rellena.
+Se muestran ejemplos incorrectos para identificar alteraciones que debilitan la marca.
+× No estirar × No girar × No cambiar los colores
+× No rellenar la muesca × No añadir contornos × No usar bajo contraste
+
+PÁGINA 12
+11 / LENGUAJE VISUAL
+La interfaz también habla AlgoFalta.
+Espacios amplios, formas suaves y una jerarquía que pone primero la lista y su presupuesto.
+Lista de la casa
+Compartida con tu equipo
+Arroz 2 unidades
+Huevos 1 cubeta
+Café Pendiente
+RITMO Y FORMAS
+Espaciado base de 8 px. Tarjetas con radio de 16 px y
+campos de 12 px. Iconos de línea redondeada, con un grosor
+coherente.
+EL COLOR TIENE UNA FUNCIÓN
+Frambuesa para acentos y selección. Berenjena para texto y
+botones principales. Blanco o rosa pálido para fondos.
+No comunicar estados solo con color: acompañar con
+etiqueta, icono o marca de selección.
+
+PÁGINA 13
+12 / CONTRASTE
+Color bonito, lectura cómoda.
+Los tamaños siguientes son reglas del sistema visual; el logo conserva sus versiones oficiales.
+Algo por comprar
+Texto principal
+15.16:1
+Algo por comprar
+Botón principal
+15.16:1
+Algo por comprar
+Acento de marca
+3.91:1
+Berenjena sobre blanco ofrece alto contraste para texto pequeño. Blanco sobre frambuesa se reserva para el símbolo y
+texto grande; no usarlo en etiquetas pequeñas. En botones de interfaz, preferir fondo berenjena con texto blanco.
+
+PÁGINA 14
+13 / APLICACIONES
+Una misma identidad, en contexto.
+Ejemplos visuales de uso. Los productos y montos son ilustrativos; no representan precios vigentes.
+Tu lista, siempre compartida.
+Organiza lo que falta y revisa un presupuesto de referencia
+antes de salir.
+Crear mi lista
+Mercado de casa
+Arroz
+Huevos
+Café
+Total de referencia
+$ 42.500 COP
+
+PÁGINA 15
+14 / VOZ DE MARCA
+Útil, cotidiana y sin complicaciones.
+El tono acompaña tanto a quien compra para su casa como a quien coordina insumos de un negocio.
+Para recordar
+“¿Qué hace falta? Agrégalo a la lista.”
+Para coordinar
+“Ya está en la lista compartida.”
+Para presupuestar
+“Este es tu total de referencia antes de salir.”
+Evitar prometer precios exactos o
+compras automáticas.
+Usar “precio de referencia” y
+“total estimado”.
+Para empresas, hablar de
+“insumos”, “equipo” y “lista
+compartida”.
+
+PÁGINA 16
+15 / ENTREGA Y USO
+Todo listo para aplicar la marca.
+Versión 1.0 · Octubre de 2026. Los archivos del paquete son la referencia para nuevas piezas.
+logos/ SVG en curvas + PNG transparentes. Principal, oscuro, blanco, tinta y negro.
+icons/ y favicon/ Maestros 1024, tamaños web, PNG 16/32/48/64, favicon.ico y apple-touch-icon.
+android/ Foreground y fondo separados, con XML de icono adaptativo para integración.
+fonts/ y web/ Nunito, licencia OFL, variables CSS, manifest y ejemplo de integración.
+Antes de publicar: comprobar el recorte real del sistema, revisar legibilidad al tamaño final y usar siempre archivos maestros. El README
+incluye rutas de integración y notas de producción.

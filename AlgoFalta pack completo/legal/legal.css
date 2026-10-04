@@ -1,0 +1,10 @@
+@font-face{font-family:Nunito;src:url('../fonts/Nunito-Variable.ttf') format('truetype');font-weight:200 1000;font-display:swap}
+:root{--bg:#fff;--fg:#302036;--muted:#6b5a70;--card:#FFF4F7;--accent:#D9366B}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1320;--fg:#f6eef3;--muted:#c4b3c8;--card:#2a1d30;--accent:#ff6b98}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.65 Nunito,system-ui,sans-serif}
+header{padding:20px 16px;border-bottom:2px solid var(--card)}header,main,footer{max-width:820px;margin:0 auto}
+main{padding:24px 16px 48px}h1{font-weight:900;font-size:2rem;line-height:1.2;margin:.2em 0}h2{font-weight:800;margin-top:2em;font-size:1.3rem}
+.meta{color:var(--muted)}a{color:var(--accent)}.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.95rem}
+td,th{border:1px solid var(--card);padding:8px;text-align:left;vertical-align:top}
+.card{background:var(--card);border-radius:16px;padding:16px 20px;margin:16px 0}footer{padding:24px 16px;color:var(--muted);font-size:.9rem;text-align:center}
+li{margin:.3em 0}

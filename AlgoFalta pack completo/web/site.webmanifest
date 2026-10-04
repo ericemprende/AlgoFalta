@@ -1,0 +1,22 @@
+{
+  "name": "AlgoFalta",
+  "short_name": "AlgoFalta",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#FFFFFF",
+  "theme_color": "#E83E75",
+  "icons": [
+    {
+      "src": "../icons/algofalta-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../icons/algofalta-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

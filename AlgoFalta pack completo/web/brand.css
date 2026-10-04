@@ -1,0 +1,4 @@
+@font-face{font-family:Nunito;src:url('../fonts/Nunito-Variable.ttf') format('truetype');font-weight:200 1000;font-display:swap;}
+:root{--af-raspberry:#E83E75;--af-raspberry-deep:#D9366B;--af-ink:#302036;--af-white:#FFFFFF;--af-soft:#FFF4F7;--af-gradient:linear-gradient(135deg,#E83E75 0%,#D9366B 100%);--af-radius:16px;--af-font:Nunito,system-ui,sans-serif;}
+body{font-family:var(--af-font);color:var(--af-ink);background:var(--af-white);}
+.af-primary{background:var(--af-ink);color:white;border:0;border-radius:16px;padding:12px 20px;font:800 16px var(--af-font);}
