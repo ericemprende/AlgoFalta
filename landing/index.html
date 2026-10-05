@@ -14,14 +14,6 @@
   --font:"Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
   --r-card:16px; --r-field:12px; --r-pill:999px;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#1E1423; --surface:#2A1E30; --soft:#2F2136; --fg:#FBEFF4; --muted:#C2AFC7; --line:#3E2D45;
-    --btn:#E83E75; --btn-fg:#FFFFFF; --accent:#FF6E9C; --accent-ink:#FF8DB0;
-    --shadow:0 10px 30px rgba(0,0,0,.35); --plate:#33253A; --wa:#173326; --wa-ink:#8FE0B1; --bubble:#33253A; --bubble-me:#1F4A33;
-    color-scheme:dark;
-  }
-}
 :root[data-theme="dark"]{
   --bg:#1E1423; --surface:#2A1E30; --soft:#2F2136; --fg:#FBEFF4; --muted:#C2AFC7; --line:#3E2D45;
   --btn:#E83E75; --btn-fg:#FFFFFF; --accent:#FF6E9C; --accent-ink:#FF8DB0;
@@ -87,7 +79,6 @@ nav .btn{padding:10px 18px}
 .tile:nth-child(2) i{background:#EAF7DF}.tile:nth-child(3) i{background:#FFF1D6}.tile:nth-child(4) i{background:#E1F1FB}
 .tile:nth-child(5) i{background:#F3E6FA}.tile:nth-child(6) i{background:#FFE3E3}.tile:nth-child(7) i{background:#E6F4EE}
 :root[data-theme="dark"] .tile i{background:var(--soft)!important}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tile i{background:var(--soft)!important}}
 .mini h4{margin:0 0 6px;font-size:.85rem;font-weight:900;display:flex;justify-content:space-between}
 .mini h4 span{color:var(--accent-ink);font-size:.7rem}
 .row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.8rem;font-weight:700}
@@ -186,6 +177,8 @@ nav .btn{padding:10px 18px}
 .avatar{font-weight:900;color:var(--accent-ink)}
 .logo{width:140px;height:72px;border-radius:var(--r-card);background:#FFFFFF;box-shadow:var(--shadow);display:grid;place-items:center;padding:12px 16px}
 .logo img{max-width:100%;max-height:44px;object-fit:contain}
+.geo-pick select{font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit;background:transparent;border:0;border-bottom:2px dotted currentColor;padding:0 2px;cursor:pointer}.geo-pick select option{color:#302036;text-transform:none}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.logo:has(em){height:auto;min-height:72px;gap:4px}.logo:has(em) img{max-height:36px}.logo em{font-style:normal;font-size:.7rem;font-weight:700;color:#302036;line-height:1.1;text-align:center}
 .logo.txt{color:#302036;font-weight:800;font-size:.85rem;text-align:center;line-height:1.2}
 @media (max-width:520px){.logo{width:calc(50% - 6px)}}
 .navr{display:flex;align-items:center;gap:10px}
@@ -207,7 +200,8 @@ nav .btn{padding:10px 18px}
 .bz .ex{margin-top:auto;font-size:.85rem;font-weight:700;background:var(--soft);border-radius:var(--r-field);padding:8px 10px}
 
 /* plans */
-.plans{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:stretch}
+.plans{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;align-items:stretch}
+@media (max-width:1180px){.plans{grid-template-columns:repeat(3,1fr)}}
 .plan{border-radius:24px;padding:26px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:14px;min-width:0}
 .plan.star{background:var(--soft);border:2px solid var(--accent);position:relative}
 .plan.star .tag{position:absolute;top:-13px;left:24px;background:var(--accent);color:#fff;font-size:.72rem;font-weight:900;padding:4px 12px;border-radius:var(--r-pill)}
@@ -268,7 +262,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
 <main class="wrap" id="inicio">
   <section class="hero">
     <div class="copy">
-      <span class="eyebrow">Lista de mercado compartida · Colombia</span>
+      <span class="eyebrow">Lista de mercado compartida · <label class="geo-pick"><span class="sr">País</span><select id="pais" aria-label="Cambiar país"></select></label></span>
       <h1>Que en la casa <span class="hl">nunca falte</span> nada.</h1>
       <p class="lead">Una sola lista para la familia, la pareja o los roommates. Todos ven lo que hace falta en tiempo real y saben cuánto va a costar el mercado antes de salir.</p>
       <div class="ctas" id="descargar">
@@ -288,7 +282,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
         <div class="screen">
           <div class="sbar"><span>8:59</span><span>●●● ▮</span></div>
           <div class="hi"><div class="avatar">L</div><div><b>Hola <em>Laura</em></b><small>Grupo: Casa Pérez · 4 personas</small></div></div>
-          <div class="budget"><div><small>Total estimado</small><b>$ 86.400</b></div><span class="chip">D1 · Bogotá</span></div>
+          <div class="budget"><div><small>Total estimado</small><b data-geo="basket">$ 86.400</b></div><span class="chip" data-geo="chip">D1 · Bogotá</span></div>
           <div class="search"><i data-lucide="search"></i> Busca: leche, panela, papel higiénico…</div>
           <div class="tiles">
             <div class="tile"><i><i data-lucide="shopping-basket"></i></i>Mercado</div>
@@ -327,7 +321,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
     </div>
     <div class="steps">
       <div class="step"><span class="num">1</span><h3>Crea tu grupo</h3><p>Casa, pareja, roommates, oficina o el asado del sábado. Invita por link de WhatsApp.</p></div>
-      <div class="step"><span class="num">2</span><h3>Agreguen lo que falta</h3><p>Busca en el catálogo de D1, Ara, Éxito y más, o escribe lo de la tienda de barrio con un precio aproximado.</p></div>
+      <div class="step"><span class="num">2</span><h3>Agreguen lo que falta</h3><p>Busca en el catálogo de <span data-geo="stores3">D1, Ara, Éxito</span> y más, o escribe lo de la tienda de barrio con un precio aproximado.</p></div>
       <div class="step"><span class="num">3</span><h3>Salgan con el total</h3><p>La lista se ordena por secciones del supermercado y muestra el total estimado en pesos.</p></div>
     </div>
   </section>
@@ -340,23 +334,23 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
     </div>
     <div class="split">
       <div class="listcard">
-        <div class="top"><h3>Asado del sábado</h3><span class="eyebrow">Total $ 150.000</span></div>
-        <p class="sub">Lo que puso cada uno · parte igual: $ 30.000</p>
+        <div class="top"><h3 data-geo="evento">Asado del sábado</h3><span class="eyebrow">Total <span data-amt="15">$ 150.000</span></span></div>
+        <p class="sub">Lo que puso cada uno · parte igual: <span data-amt="3">$ 30.000</span></p>
         <div class="bars">
-          <div class="bar"><span class="nm">Ana</span><span class="track"><span style="width:100%"></span><i style="left:50%"></i></span><b>$ 60.000</b></div>
-          <div class="bar"><span class="nm">Eli</span><span class="track"><span style="width:83%"></span><i style="left:50%"></i></span><b>$ 50.000</b></div>
-          <div class="bar"><span class="nm">Beto</span><span class="track"><span style="width:50%"></span><i style="left:50%"></i></span><b>$ 30.000</b></div>
-          <div class="bar"><span class="nm">Caro</span><span class="track"><span style="width:17%"></span><i style="left:50%"></i></span><b>$ 10.000</b></div>
-          <div class="bar"><span class="nm">Dani</span><span class="track"><span style="width:0%"></span><i style="left:50%"></i></span><b>$ 0</b></div>
+          <div class="bar"><span class="nm">Ana</span><span class="track"><span style="width:100%"></span><i style="left:50%"></i></span><b data-amt="6">$ 60.000</b></div>
+          <div class="bar"><span class="nm">Eli</span><span class="track"><span style="width:83%"></span><i style="left:50%"></i></span><b data-amt="5">$ 50.000</b></div>
+          <div class="bar"><span class="nm">Beto</span><span class="track"><span style="width:50%"></span><i style="left:50%"></i></span><b data-amt="3">$ 30.000</b></div>
+          <div class="bar"><span class="nm">Caro</span><span class="track"><span style="width:17%"></span><i style="left:50%"></i></span><b data-amt="1">$ 10.000</b></div>
+          <div class="bar"><span class="nm">Dani</span><span class="track"><span style="width:0%"></span><i style="left:50%"></i></span><b data-amt="0">$ 0</b></div>
         </div>
         <p class="sub">La línea marca la parte igual de cada persona.</p>
       </div>
       <div class="listcard">
         <div class="top"><h3>Para saldar cuentas</h3><span class="eyebrow">2 transferencias</span></div>
-        <div class="settle"><span class="who2">Dani</span><span class="arrow">→</span><span class="who2">Ana</span><b>$ 30.000</b></div>
-        <div class="settle"><span class="who2">Caro</span><span class="arrow">→</span><span class="who2">Eli</span><b>$ 20.000</b></div>
+        <div class="settle"><span class="who2">Dani</span><span class="arrow">→</span><span class="who2">Ana</span><b data-amt="3">$ 30.000</b></div>
+        <div class="settle"><span class="who2">Caro</span><span class="arrow">→</span><span class="who2">Eli</span><b data-amt="2">$ 20.000</b></div>
         <div class="settle ok"><span class="who2">Beto</span><span>Ya está a paz y salvo</span><b>✓</b></div>
-        <div class="total"><div><small>Cobra con</small><b style="font-size:1.05rem">Nequi · Daviplata · Bre-B</b></div></div>
+        <div class="total"><div><small>Cobra con</small><b style="font-size:1.05rem" data-geo="pay">Nequi · Daviplata · Bre-B</b></div></div>
         <div class="botnote" style="margin-top:4px"><span class="pill">Quién puso más</span><span class="pill">Gasto por mes</span><span class="pill">Historial del grupo</span></div>
       </div>
     </div>
@@ -376,7 +370,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
         <div class="msg"><b>Sofi</b>Yo ya traje los huevos</div>
         <div class="msg botm"><b>Bot AlgoFalta</b>Listo. Agregué café y pañales talla 3. Marqué huevos como comprados.</div>
         <div class="msg me"><b>Laura</b>@algofalta ¿cuánto vamos?</div>
-        <div class="msg botm"><b>Bot AlgoFalta</b>Total estimado en D1: $ 86.400 (precio de referencia).</div>
+        <div class="msg botm"><b>Bot AlgoFalta</b>Total estimado en <span data-geo="store1">D1</span>: <span data-geo="basket">$ 86.400</span> (precio de referencia).</div>
       </div>
       <div class="listcard" aria-live="polite">
         <div class="top"><h3>Mercado de casa</h3><span class="eyebrow">En vivo</span></div>
@@ -385,7 +379,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
         <div class="row" id="r-cafe"><span class="box"></span><span class="n">Café molido</span><span class="who">Bot</span><span class="q">x1</span></div>
         <div class="row" id="r-pan"><span class="box"></span><span class="n">Pañales talla 3</span><span class="who">Bot</span><span class="q">x1</span></div>
         <div class="row done" id="r-huevos"><span class="box">✓</span><span class="n">Huevos AA</span><span class="q">30</span></div>
-        <div class="total"><div><small>Total de referencia</small><b>$ 86.400 COP</b></div><button class="btn" id="replay" type="button" style="padding:10px 16px;font-size:.85rem">Ver de nuevo</button></div>
+        <div class="total"><div><small>Total de referencia</small><b data-geo="basketc">$ 86.400 COP</b></div><button class="btn" id="replay" type="button" style="padding:10px 16px;font-size:.85rem">Ver de nuevo</button></div>
       </div>
     </div>
     <div class="botnote">
@@ -400,9 +394,9 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
     <div class="head center">
       <span class="eyebrow">Supermercados</span>
       <h2>Precios de referencia de donde ya compras.</h2>
-      <p class="lead">Empezamos con D1, Ara y Éxito en Bogotá. Las demás cadenas llegan por fases.</p>
+      <p class="lead" data-geo="supers-lead">Empezamos con D1, Ara y Éxito en Bogotá. Las demás cadenas llegan por fases.</p>
     </div>
-    <div class="supers"><span class="group-t">Supermercados</span><span class="logo"><img src="logos/exito.svg" alt="Éxito"></span><span class="logo"><img src="logos/carulla.svg" alt="Carulla"></span><span class="logo"><img src="logos/d1.svg" alt="D1"></span><span class="logo"><img src="logos/ara.jpg" alt="Ara"></span><span class="logo"><img src="logos/olimpica.svg" alt="Olímpica"></span><span class="logo"><img src="logos/jumbo.png" alt="Jumbo"></span><span class="logo"><img src="logos/metro.png" alt="Metro"></span><span class="logo"><img src="logos/makro.svg" alt="Makro"></span><span class="logo"><img src="logos/pricesmart.png" alt="PriceSmart"></span><span class="logo"><img src="logos/isimo.svg" alt="Ísimo"></span><span class="group-t">Hogar y ferretería</span><span class="logo"><img src="logos/homecenter.png" alt="Homecenter"></span><span class="logo"><img src="logos/easy.svg" alt="Easy"></span><span class="logo txt">Ferreterías de barrio</span><span class="group-t">Droguerías</span><span class="logo"><img src="logos/cruzverde.svg" alt="Cruz Verde"></span><span class="logo"><img src="logos/farmatodo.svg" alt="Farmatodo"></span><span class="logo txt">La Rebaja</span></div>
+    <div class="supers" id="supers"><span class="group-t">Supermercados</span><span class="logo"><img src="logos/exito.svg" alt="Éxito"></span><span class="logo"><img src="logos/carulla.svg" alt="Carulla"></span><span class="logo"><img src="logos/d1.svg" alt="D1"></span><span class="logo"><img src="logos/ara.jpg" alt="Ara"></span><span class="logo"><img src="logos/olimpica.svg" alt="Olímpica"></span><span class="logo"><img src="logos/jumbo.png" alt="Jumbo"></span><span class="logo"><img src="logos/metro.png" alt="Metro"></span><span class="logo"><img src="logos/makro.svg" alt="Makro"></span><span class="logo"><img src="logos/pricesmart.png" alt="PriceSmart"></span><span class="logo"><img src="logos/isimo.svg" alt="Ísimo"></span><span class="group-t">Hogar y ferretería</span><span class="logo"><img src="logos/homecenter.png" alt="Homecenter"></span><span class="logo"><img src="logos/easy.svg" alt="Easy"></span><span class="logo txt">Ferreterías de barrio</span><span class="group-t">Droguerías</span><span class="logo"><img src="logos/cruzverde.svg" alt="Cruz Verde"></span><span class="logo"><img src="logos/farmatodo.svg" alt="Farmatodo"></span><span class="logo txt">La Rebaja</span></div>
     <p class="disclaimer">Los precios son de referencia y el total es estimado. El precio final es el del supermercado. AlgoFalta no está afiliada a ninguna cadena.</p>
   </section>
 
@@ -435,24 +429,30 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
       <div class="plan star">
         <span class="tag">Recomendado</span>
         <h3>Plus Hogar</h3><p class="for">Familias y parejas</p>
-        <div class="price">$12.900 <small>/mes</small></div>
-        <ul><li>Grupos ilimitados</li><li>Bot en WhatsApp con voz</li><li>Estadísticas de gastos del grupo</li><li>Presupuesto del mercado</li><li>Compara la lista completa</li><li>Mercado recurrente</li></ul>
+        <div class="price"><span data-geo="p-plus">$12.900</span> <small>/mes</small></div>
+        <ul><li>Grupos ilimitados</li><li>Bot en WhatsApp con voz</li><li>Estadísticas de gastos del grupo</li><li>Presupuesto del mercado</li><li>Despensa: avisos de «se te acaba»</li><li>Aviso de productos por vencer</li><li>Mercado recurrente</li></ul>
         <a class="btn" href="#descargar">Probar Plus</a>
       </div>
       <div class="plan">
+        <h3>Pro Hogar</h3><p class="for">Los que quieren ahorrar</p>
+        <div class="price"><span data-geo="p-pro">$19.900</span> <small>/mes</small></div>
+        <ul><li>Todo lo de Plus Hogar</li><li>Carrito más barato: dónde comprar cada cosa</li><li>Alertas de descuentos</li><li>Historial de precios</li><li>Hasta 30 productos seguidos</li></ul>
+        <a class="btn ghost" href="#descargar">Probar Pro</a>
+      </div>
+      <div class="plan">
         <h3>Negocio</h3><p class="for">Equipos pequeños</p>
-        <div class="price">$49.900 <small>/mes</small></div>
+        <div class="price"><span data-geo="p-neg">$49.900</span> <small>/mes</small></div>
         <ul><li>Hasta 10 usuarios</li><li>2.000 productos</li><li>Roles y aprobaciones</li><li>Proyectos y proveedores</li></ul>
         <a class="btn ghost" href="#descargar">Hablar con ventas</a>
       </div>
       <div class="plan">
         <h3>Empresa</h3><p class="for">Constructoras y sedes</p>
-        <div class="price">$149.900 <small>/mes</small></div>
+        <div class="price"><span data-geo="p-emp">$149.900</span> <small>/mes</small></div>
         <ul><li>Hasta 50 usuarios</li><li>Productos ilimitados</li><li>Varias sedes u obras</li><li>Stock mínimo y reportes</li></ul>
         <a class="btn ghost" href="#descargar">Hablar con ventas</a>
       </div>
     </div>
-    <p class="corp">Plus Hogar anual: $129.000 (2 meses gratis). ¿Más de 50 personas? Plan Corporativo a la medida.</p>
+    <p class="corp">Plus Hogar anual: <span data-geo="p-anual">$129.000</span> (2 meses gratis). ¿Más de 50 personas? Plan Corporativo a la medida.</p>
   </section>
 
   <section id="preguntas">
@@ -486,11 +486,13 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
   </footer>
 </main>
 
+<script src="comercios.js"></script>
+<script src="geo.js"></script>
 <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 <script>
 (function(){
   var root=document.documentElement,btn=document.getElementById("theme");
-  function isDark(){var t=root.getAttribute("data-theme");return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;}
+  function isDark(){var t=root.getAttribute("data-theme");return t==="dark";}
   function paint(){var d=isDark();btn.innerHTML='<i data-lucide="'+(d?"sun":"moon")+'"></i>';btn.setAttribute("aria-label",d?"Cambiar a modo claro":"Cambiar a modo oscuro");if(window.lucide)lucide.createIcons();}
   try{var saved=localStorage.getItem("af-theme");if(saved)root.setAttribute("data-theme",saved);}catch(e){}
   btn.addEventListener("click",function(){var n=isDark()?"light":"dark";root.setAttribute("data-theme",n);try{localStorage.setItem("af-theme",n);}catch(e){}paint();});

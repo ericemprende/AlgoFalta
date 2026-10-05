@@ -1,0 +1,7 @@
+# Solo se publica la web: landing/ (en la raíz del sitio) y app/ (demo en /app).
+# Todo lo demás es privado o interno y no debe quedar en internet.
+docs/
+admin/
+supabase/
+AlgoFalta pack completo/
+README.md

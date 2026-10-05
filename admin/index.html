@@ -1,429 +1,314 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-CO">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AlgoFalta Admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<link rel="icon" href="../AlgoFalta pack completo/favicon/favicon.svg">
 <style>
-/* Prototipo del panel administrativo. Datos de ejemplo; en producción todo sale de Supabase y las llaves viven en el servidor. */
-:root{
-  --frambuesa:#E83E75; --berenjena:#302036;
-  --bg:#FAF6F8; --surface:#FFFFFF; --soft:#FFF4F7; --fg:#302036; --muted:#6E5F73; --line:#F1E3E9;
-  --btn:#302036; --btn-fg:#fff; --accent:#E83E75; --accent-ink:#C42A5D;
-  --ok:#1E7A4C; --ok-bg:#E3F5EB; --warn:#9A5B00; --warn-bg:#FFF1D6; --bad:#B42318; --bad-bg:#FDE7E5;
-  --shadow:0 6px 20px rgba(48,32,54,.06);
-  --font:"Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#1A1120; --surface:#2A1E30; --soft:#2F2136; --fg:#FBEFF4; --muted:#C2AFC7; --line:#3E2D45;
-    --btn:#E83E75; --accent:#FF6E9C; --accent-ink:#FF8DB0;
-    --ok:#8FE0B1; --ok-bg:#173326; --warn:#FFC966; --warn-bg:#3A2C10; --bad:#FF9B90; --bad-bg:#3D1A18;
-    --shadow:0 6px 20px rgba(0,0,0,.3); color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#1A1120; --surface:#2A1E30; --soft:#2F2136; --fg:#FBEFF4; --muted:#C2AFC7; --line:#3E2D45;
-  --btn:#E83E75; --accent:#FF6E9C; --accent-ink:#FF8DB0;
-  --ok:#8FE0B1; --ok-bg:#173326; --warn:#FFC966; --warn-bg:#3A2C10; --bad:#FF9B90; --bad-bg:#3D1A18;
-  --shadow:0 6px 20px rgba(0,0,0,.3); color-scheme:dark;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45}
-h1,h2,h3{margin:0;font-weight:800;line-height:1.2}
-h1{font-size:1.6rem} h2{font-size:1.15rem} h3{font-size:1rem}
-p{margin:0}
-button,input,select{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
-.layout{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
-aside{background:var(--berenjena);color:#FBEFF4;padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
-.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.25rem;padding:6px 10px 18px}
-.brand svg{width:22px;height:27px;color:var(--frambuesa)}
-.brand small{font-size:.7rem;font-weight:800;background:var(--frambuesa);color:#fff;border-radius:99px;padding:2px 8px}
-.nav-btn{display:flex;align-items:center;gap:10px;background:none;border:0;color:#E4D6E9;text-align:left;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer}
-.nav-btn:hover{background:rgba(255,255,255,.07)}
-.nav-btn[aria-current="page"]{background:var(--frambuesa);color:#fff}
-.nav-btn svg{width:18px;height:18px;flex:none}
-aside .spacer{flex:1}
-.theme{margin:8px 12px 0;background:rgba(255,255,255,.08);border:0;border-radius:10px;padding:8px 10px;color:#E4D6E9;font-weight:700;cursor:pointer}
-main{padding:28px clamp(16px,3vw,40px);max-width:1200px;width:100%}
-.view{display:none;flex-direction:column;gap:20px}
-.view.on{display:flex}
-.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
-.head p{color:var(--muted)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
-.kpi small{display:block;color:var(--muted);font-weight:700;font-size:.8rem}
-.kpi b{display:block;font-size:1.55rem;font-weight:900;margin-top:4px;font-variant-numeric:tabular-nums}
-.kpi span{font-size:.8rem;font-weight:700}
-.up{color:var(--ok)} .down{color:var(--bad)}
-.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
-td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
-tr:last-child td{border-bottom:0}
-td.num,th.num{text-align:right}
-.tablewrap{overflow-x:auto}
-.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:800;white-space:nowrap}
-.p-ok{background:var(--ok-bg);color:var(--ok)} .p-warn{background:var(--warn-bg);color:var(--warn)} .p-bad{background:var(--bad-bg);color:var(--bad)} .p-plan{background:var(--soft);color:var(--accent-ink)}
-.bar{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;min-width:80px}
-.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
-.bar.hot i{background:var(--bad)}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap}
-input[type=search],input[type=text],input[type=number],input[type=password],select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-width:0}
-input[type=number]{width:110px;text-align:right;font-variant-numeric:tabular-nums}
-.btn{display:inline-flex;align-items:center;gap:8px;background:var(--btn);color:var(--btn-fg);border:0;border-radius:99px;padding:9px 18px;font-weight:800;cursor:pointer}
-.btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 2px var(--line)}
-.btn.sm{padding:6px 12px;font-size:.85rem}
-.providers{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
-.prov{display:flex;flex-direction:column;gap:12px}
-.prov-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.prov-top h3{display:flex;align-items:center;gap:10px}
-.dot{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:900;color:#fff;font-size:.9rem}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.field{display:flex;flex-direction:column;gap:4px;font-size:.8rem;font-weight:700;color:var(--muted)}
-.field input{color:var(--fg);font-weight:600}
-.models{font-size:.85rem}
-.models td{padding:6px 4px}
-.switch{position:relative;width:42px;height:24px;flex:none}
-.switch input{opacity:0;width:100%;height:100%;margin:0;position:absolute;cursor:pointer}
-.switch span{position:absolute;inset:0;background:var(--line);border-radius:99px;pointer-events:none;transition:.15s}
-.switch span::after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s}
-.switch input:checked+span{background:var(--ok)}
-.switch input:checked+span::after{left:21px}
-.note{font-size:.82rem;color:var(--muted);background:var(--soft);border-radius:12px;padding:10px 14px}
-.note b{color:var(--fg)}
-.routing{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.route{display:flex;flex-direction:column;gap:6px}
-.route p{font-size:.82rem;color:var(--muted)}
-.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
-.plan{display:flex;flex-direction:column;gap:10px}
-.plan .kv{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.88rem}
-.plan .kv label{color:var(--muted);font-weight:700}
-.plan hr{border:0;border-top:1px dashed var(--line);margin:4px 0;width:100%}
-.plan .res{display:flex;justify-content:space-between;font-size:.88rem;font-variant-numeric:tabular-nums}
-.plan .res b{font-weight:800}
-.margin{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;font-weight:900}
-.global{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.chart{display:flex;align-items:flex-end;gap:8px;height:150px;padding-top:10px}
-.chart div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
-.chart i{display:block;width:100%;max-width:38px;background:var(--accent);border-radius:8px 8px 3px 3px}
-.chart small{font-size:.72rem;color:var(--muted);font-weight:700}
-.legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);font-weight:700}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--berenjena);color:#fff;padding:10px 18px;border-radius:99px;font-weight:800;opacity:0;transition:.2s;pointer-events:none}
-.toast.on{opacity:1}
-@media (max-width:860px){
-  .layout{grid-template-columns:1fr}
-  aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;padding:10px}
-  aside .spacer,.brand small{display:none}
-  .brand{padding:6px 10px;width:100%}
-  .nav-btn{padding:8px 10px;font-size:.85rem}
-  .grid2{grid-template-columns:1fr}
-}
+@font-face{font-family:Nunito;src:url('../AlgoFalta pack completo/fonts/Nunito-Variable.ttf') format('truetype');font-weight:200 1000}
+:root{--bg:#FFF4F7;--card:#fff;--fg:#302036;--muted:#6b5a70;--line:#f1dce4;--accent:#D9366B;--ok:#1f8a5b;--warn:#b7791f;--bad:#c53030;--grad:linear-gradient(135deg,#E83E75,#D9366B)}
+:root[data-theme="dark"]{--bg:#1c1320;--card:#2a1d30;--fg:#f6eef3;--muted:#c4b3c8;--line:#3d2b44;--accent:#ff6b98}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:400 15px/1.5 Nunito,system-ui,sans-serif}
+main{min-width:0;width:100%;max-width:1240px;padding:24px 24px 60px}
+h1{font-weight:900;font-size:1.5rem;margin:0 0 4px}h2{font-weight:800;font-size:1.1rem;margin:0 0 10px}.muted{color:var(--muted)}
+.card{background:var(--card);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 4px 18px rgba(48,32,54,.06)}
+.tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+td input{width:96px;font:inherit;color:inherit;background:transparent;border:1px solid var(--line);border-radius:8px;padding:4px 6px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:800;background:var(--line)}
+.pill.ok{background:#d9f4e7;color:#145c3d}.pill.warn{background:#fdf0d5;color:#7a4f0e}.pill.bad{background:#fde2e2;color:#8a1f1f}.pill.web{background:#e6e9ff;color:#2c3792}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.85rem}
+input,select,textarea{font:400 15px Nunito,sans-serif;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 10px}
+.btn{background:var(--fg);color:var(--bg);border:0;border-radius:14px;padding:11px 18px;font:800 15px Nunito,sans-serif;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--fg);border:2px solid var(--line)}.btn.pink{background:var(--grad);color:#fff}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.seg button{border:2px solid var(--line);background:var(--card);color:var(--fg);border-radius:12px;padding:10px 14px;font:800 14px Nunito,sans-serif;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.out{margin-top:14px;padding:14px;border-radius:12px;background:var(--bg);word-break:break-all}
+.note{font-size:.85rem;color:var(--muted)}.warnbox{border-left:4px solid var(--warn);padding:8px 12px;background:var(--bg);border-radius:8px;font-size:.88rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+body{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}
+aside{background:var(--grad);color:#fff;position:sticky;top:0;height:100vh;overflow-y:auto;padding:20px 14px;display:flex;flex-direction:column;gap:6px}
+aside .brand{display:flex;align-items:center;gap:10px;padding:0 8px 14px}aside .brand img{height:26px}aside .brand b{font-weight:900;opacity:.9}
+aside .grp{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.75;padding:12px 10px 4px}
+aside nav{display:flex;flex-direction:column;gap:4px}
+aside nav button{background:transparent;color:#fff;border:0;border-radius:12px;padding:11px 12px;font:700 15px Nunito,sans-serif;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px}
+aside nav button svg{width:18px;height:18px;flex:none}
+aside nav button:hover{background:rgba(255,255,255,.14)}
+aside nav button[aria-selected="true"]{background:#fff;color:#D9366B}
+aside .foot{margin-top:auto;font-size:.78rem;opacity:.75;padding:12px 10px 0}
+.sw{position:relative;display:inline-block;width:42px;height:24px;vertical-align:middle}.sw input{opacity:0;position:absolute;inset:0;margin:0;cursor:pointer;z-index:1}
+.sw span{position:absolute;inset:0;border-radius:999px;background:var(--line);transition:.15s}.sw span:before{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.15s}
+.sw input:checked+span{background:var(--accent)}.sw input:checked+span:before{transform:translateX(18px)}.sw input:disabled{cursor:not-allowed}.sw input:disabled+span{opacity:.6}
+.chipv{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:4px 10px;font:700 12px ui-monospace,monospace;cursor:pointer}
+code{background:var(--bg);padding:1px 5px;border-radius:6px;font-size:.85em}textarea{resize:vertical;font-family:inherit}
+@media (max-width:820px){body{grid-template-columns:1fr}aside{position:static;height:auto;padding:12px}aside nav{flex-direction:row;flex-wrap:wrap}aside .grp,aside .foot{display:none}main{padding:16px}}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <symbol id="bag" viewBox="0 0 256 312"><path d="M76 92 A52 52 0 0 1 180 92" fill="none" stroke="currentColor" stroke-width="30"/><path fill="currentColor" d="M0 116q0-20 20-20H136V164q0 4 4 4H204q4 0 4-4V96H236q20 0 20 20V246q0 66-66 66H66Q0 312 0 246Z"/></symbol>
-  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
-  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
-  <symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
-  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/></symbol>
-</defs></svg>
+<aside>
+  <div class="brand"><img src="../AlgoFalta pack completo/logos/algofalta-horizontal-blanco.svg" alt="AlgoFalta"><b>Admin</b></div>
+  <div class="grp">Planes y precios</div>
+  <nav role="tablist" aria-label="Menú del panel">
+    <button role="tab" data-tab="precios" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Precios por país</button>
+    <button role="tab" data-tab="activar" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Activar plan</button>
+    <button role="tab" data-tab="planes" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 15h4"/></svg>Planes activos</button>
+  </nav>
+  <div class="grp">Comunicación</div>
+  <nav role="tablist" aria-label="Comunicación">
+    <button role="tab" data-tab="correos" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>Correos</button>
+  </nav>
+  <div class="foot">Prototipo · datos locales</div>
+</aside>
 
-<div class="layout">
-  <aside>
-    <div class="brand"><svg><use href="#bag"/></svg>AlgoFalta <small>ADMIN</small></div>
-    <button class="nav-btn" data-view="resumen" aria-current="page"><svg><use href="#i-home"/></svg>Resumen</button>
-    <button class="nav-btn" data-view="usuarios"><svg><use href="#i-users"/></svg>Usuarios y grupos</button>
-    <button class="nav-btn" data-view="ia"><svg><use href="#i-cpu"/></svg>APIs de IA</button>
-    <button class="nav-btn" data-view="planes"><svg><use href="#i-tag"/></svg>Planes y márgenes</button>
-    <div class="spacer"></div>
-    <button class="theme" id="theme">Cambiar tema</button>
-  </aside>
+<main>
+  <!-- PRECIOS -->
+  <section id="tab-precios">
+    <h1>Precios por país</h1>
+    <p class="muted">Precio final al cliente (IVA incluido). Plus Hogar se vende en la app (Google Play / App Store, 15 %). Negocio, Empresa y Corporativo solo por la web o venta directa.</p>
+    <div class="card"><div class="tbl"><table id="tPrecios"></table></div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="guardarPrecios">Guardar cambios</button><button class="btn ghost" id="restaurarPrecios">Restaurar precios aprobados</button><span class="note" id="msgPrecios"></span></div>
+    </div>
+    <div class="card"><h2>Cuánto queda por cliente al mes</h2>
+      <p class="note">Plus: precio − IVA − 15 % tienda − costo bot/servidor. B2B web: precio − IVA − comisión de pasarela − costo bot/servidor por usuario. Costo estimado: <input id="costo" type="number" step="0.05" value="0.60" style="width:70px"> USD por usuario activo/mes.</p>
+      <div class="tbl"><table id="tNeto"></table></div>
+    </div>
+  </section>
 
-  <main>
-    <!-- RESUMEN -->
-    <section class="view on" id="v-resumen">
-      <div class="head"><div><h1>Resumen</h1><p>Octubre 2026 · datos de ejemplo</p></div></div>
-      <div class="kpis" id="kpis"></div>
-      <div class="grid2">
-        <div class="card">
-          <div class="head"><h2>Ingresos vs. gasto en IA (miles de COP)</h2><div class="legend"><span style="color:var(--accent)">■ Ingreso neto</span><span style="color:var(--berenjena)">■ Gasto IA + WhatsApp</span></div></div>
-          <div class="chart" id="chart"></div>
-        </div>
-        <div class="card">
-          <h2>Alertas</h2>
-          <div class="tablewrap"><table><tbody id="alerts"></tbody></table></div>
-        </div>
+  <!-- ACTIVAR -->
+  <section id="tab-activar" hidden>
+    <h1>Activar plan</h1>
+    <p class="muted">Tres formas: manual (transferencia, convenio, cortesía) o enviando un enlace de pago de Wompi o Mercado Pago. El enlace se envía por correo o WhatsApp, nunca dentro de la app.</p>
+    <div class="card">
+      <div class="seg" id="modo">
+        <button data-m="manual" aria-pressed="true">Manual</button>
+        <button data-m="wompi" aria-pressed="false">Enlace Wompi</button>
+        <button data-m="mp" aria-pressed="false">Enlace Mercado Pago</button>
       </div>
-    </section>
-
-    <!-- USUARIOS -->
-    <section class="view" id="v-usuarios">
-      <div class="head"><div><h1>Usuarios y grupos</h1><p>Consumo de créditos del bot por grupo en el ciclo actual.</p></div>
-        <div class="toolbar"><input type="search" id="q" placeholder="Buscar nombre o ciudad" aria-label="Buscar"><select id="fplan" aria-label="Filtrar plan"><option value="">Todos los planes</option></select></div></div>
-      <div class="card tablewrap">
-        <table>
-          <thead><tr><th>Grupo / dueño</th><th>Plan</th><th>Ciudad</th><th class="num">Miembros</th><th>Créditos usados</th><th class="num">Costo IA (COP)</th><th>Estado</th><th></th></tr></thead>
-          <tbody id="users"></tbody>
-        </table>
+      <div class="grid">
+        <label>Organización<input id="fOrg" placeholder="Constructora Andes S.A.S."></label>
+        <label>NIT / RUC / RFC<input id="fNit" placeholder="900.123.456-7"></label>
+        <label>Correo de facturación<input id="fMail" type="email" placeholder="compras@empresa.com"></label>
+        <label>WhatsApp<input id="fTel" placeholder="+57 300 000 0000"></label>
+        <label>País<select id="fPais"></select></label>
+        <label>Plan<select id="fPlan">
+          <option value="neg">Negocio</option><option value="emp">Empresa</option><option value="corp">Corporativo</option><option value="plus">Plus Hogar (cortesía)</option><option value="pro">Pro Hogar (cortesía)</option>
+        </select></label>
+        <label>Periodo<select id="fPer"><option value="1">Mensual</option><option value="12">Anual (2 meses gratis)</option></select></label>
+        <label>Cupos (usuarios)<input id="fCupos" type="number" min="1" value="10"></label>
+        <label>Precio a cobrar<input id="fPrecio" type="number" step="0.01"></label>
+        <label>Inicio<input id="fIni" type="date"></label>
       </div>
-    </section>
-
-    <!-- IA -->
-    <section class="view" id="v-ia">
-      <div class="head"><div><h1>APIs de IA</h1><p>Proveedores que leen mensajes y audios del bot. Los precios son de referencia: verifícalos en la web de cada proveedor.</p></div></div>
-      <p class="note"><b>Seguridad:</b> en producción las llaves se guardan como secretos en el servidor (Supabase Edge Functions) y nunca llegan al navegador ni a la app. Este prototipo solo guarda los últimos 4 caracteres para mostrar que hay una llave configurada.</p>
-      <div class="card">
-        <h2 style="margin-bottom:12px">Enrutamiento: qué modelo hace cada tarea</h2>
-        <div class="routing" id="routing"></div>
+      <div class="grid" id="manualBox" style="margin-top:12px">
+        <label>Medio de pago<select id="fMedio"><option>Transferencia bancaria</option><option>Consignación</option><option>Nequi / Bre-B</option><option>Efectivo</option><option>Convenio / crédito</option><option>Cortesía</option></select></label>
+        <label>Referencia del pago<input id="fRef" placeholder="Nº transacción o motivo"></label>
+        <label>Comprobante<input id="fComp" type="file" accept="image/*,application/pdf"></label>
+        <label>Nota<input id="fNota" placeholder="Opcional"></label>
       </div>
-      <div class="providers" id="providers"></div>
-    </section>
-
-    <!-- PLANES -->
-    <section class="view" id="v-planes">
-      <div class="head"><div><h1>Planes y márgenes</h1><p>Cuánto deja cada plan si un grupo gasta todos sus créditos. La regla: margen mínimo del 30%.</p></div><button class="btn ghost sm" id="reset">Restaurar valores</button></div>
-      <div class="card">
-        <h2 style="margin-bottom:12px">Supuestos generales</h2>
-        <div class="global" id="global"></div>
+      <p class="warnbox" id="gwWarn" hidden></p>
+      <div class="row" style="margin-top:14px">
+        <button class="btn pink" id="accion">Activar plan</button>
+        <span class="note" id="resumen"></span>
       </div>
-      <div class="plans" id="plans"></div>
-      <p class="note">Cómo se calcula: precio − IVA (19%) − comisión de la tienda o pasarela = ingreso neto. El costo es el peor caso: el grupo usa todos los mensajes y minutos de audio con el modelo asignado, más plantillas de WhatsApp e infraestructura. Margen = (ingreso neto − costo) ÷ ingreso neto.</p>
-    </section>
-  </main>
-</div>
-<div class="toast" id="toast" role="status"></div>
+      <div class="out" id="salida" hidden></div>
+    </div>
+  </section>
+
+  <!-- PLANES -->
+  <section id="tab-planes" hidden>
+    <h1>Planes activos</h1>
+    <div class="card"><div class="tbl"><table id="tPlanes"></table></div>
+      <p class="note">Los enlaces pendientes se activan solos cuando llega el webhook de la pasarela. En este prototipo puedes marcarlos como pagados a mano.</p></div>
+  </section>
+  <!-- CORREOS -->
+  <section id="tab-correos" hidden>
+    <h1>Correos</h1>
+    <p class="muted">Todos los correos que AlgoFalta envía a clientes y empresas: autenticación, cuenta, cobros y recordatorios, B2B, marketing y legales. Edita el texto, activa o apaga cada uno y revisa cómo se ve.</p>
+    <div class="card">
+      <h2>Ajustes de envío</h2>
+      <div class="grid">
+        <label>Proveedor de correo<select id="cfgProv"><option>Resend</option><option>Postmark</option><option>Amazon SES</option><option>Brevo</option><option>SendGrid</option></select></label>
+        <label>Dominio de envío<input id="cfgDom"></label>
+        <label>Nombre remitente (transaccionales)<input id="cfgNomT"></label>
+        <label>Correo remitente (transaccionales)<input id="cfgMailT" type="email"></label>
+        <label>Nombre remitente (marketing)<input id="cfgNomM"></label>
+        <label>Correo remitente (marketing)<input id="cfgMailM" type="email"></label>
+        <label>Responder a<input id="cfgReply" type="email"></label>
+        <label>Enviar marketing desde las (hora local)<input id="cfgIni" type="number" min="0" max="23"></label>
+        <label>…hasta las<input id="cfgFin" type="number" min="1" max="24"></label>
+        <label style="grid-column:1/-1">Pie legal de todos los correos<input id="cfgPie"></label>
+      </div>
+      <h2 style="margin-top:16px">Configuración DNS pendiente</h2>
+      <div class="tbl"><table id="cDns"></table></div>
+      <p class="note">Marketing: solo a quienes aceptaron recibirlo, con enlace de baja en cada correo (Ley 1581 de 2012 en Colombia, RGPD en España, LGPD/CAN-SPAM según el caso). Los transaccionales (autenticación, cobros, recibos) no necesitan consentimiento de marketing.</p>
+    </div>
+    <div class="card">
+      <div class="seg" id="cSeg"></div>
+      <div class="tbl"><table id="cTabla"></table></div>
+    </div>
+    <div class="card" id="cEditor" hidden></div>
+  </section>
+
+</main>
 
 <script>
-const $ = s => document.querySelector(s);
-const fmt = n => Math.round(n).toLocaleString('es-CO');
-const store = {
-  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
-  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+/* Prototipo: los datos se guardan en este navegador (localStorage). En producción: tablas
+   prices, organizations, entitlements y payments en Supabase (ver docs/panel-admin-planes-b2b.md). */
+var APROBADOS = {
+  CO:{n:"Colombia",cur:"COP",loc:"es-CO",fx:4100,iva:.19,plus:12900,pro:19900,anual:129000,neg:49900,emp:149900,gw:{wompi:[2.65,700],mp:[3.29,952]}},
+  MX:{n:"México",cur:"MXN",loc:"es-MX",fx:18.5,iva:.16,plus:69,pro:109,anual:690,neg:249,emp:699,gw:{mp:[3.49,4]}},
+  PE:{n:"Perú",cur:"PEN",loc:"es-PE",fx:3.7,iva:.18,plus:11.9,pro:18.9,anual:119,neg:44.9,emp:129,gw:{mp:[3.99,1]}},
+  CL:{n:"Chile",cur:"CLP",loc:"es-CL",fx:940,iva:.19,plus:3490,pro:5490,anual:34900,neg:12990,emp:39990,gw:{mp:[3.19,0]}},
+  EC:{n:"Ecuador",cur:"USD",loc:"es-EC",fx:1,iva:.15,plus:2.99,pro:4.99,anual:29.99,neg:11.99,emp:34.99,gw:{}},
+  AR:{n:"Argentina",cur:"ARS",loc:"es-AR",fx:1400,iva:.21,plus:3990,pro:6290,anual:39900,neg:14990,emp:44990,gw:{mp:[4.39,0]}},
+  PA:{n:"Panamá",cur:"USD",loc:"es-PA",fx:1,iva:.07,plus:3.49,pro:5.49,anual:34.99,neg:12.99,emp:39.99,gw:{}},
+  CR:{n:"Costa Rica",cur:"CRC",loc:"es-CR",fx:510,iva:.13,plus:1790,pro:2790,anual:17900,neg:6490,emp:19900,gw:{}},
+  GT:{n:"Guatemala",cur:"GTQ",loc:"es-GT",fx:7.7,iva:.12,plus:22.9,pro:35.9,anual:229,neg:89,emp:259,gw:{}},
+  DO:{n:"Rep. Dominicana",cur:"DOP",loc:"es-DO",fx:62,iva:.18,plus:179,pro:279,anual:1790,neg:690,emp:1990,gw:{}},
+  ES:{n:"España",cur:"EUR",loc:"es-ES",fx:.88,iva:.21,plus:2.99,pro:4.99,anual:19.99,neg:12.99,emp:39.99,gw:{}}
 };
-function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),1800); }
+var GWN = {wompi:"Wompi", mp:"Mercado Pago"};
+function load(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
+function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+var P = load("af-admin-precios", JSON.parse(JSON.stringify(APROBADOS)));
+Object.keys(APROBADOS).forEach(function(c){ if (!P[c]) P[c] = JSON.parse(JSON.stringify(APROBADOS[c])); else if (P[c].pro == null) P[c].pro = APROBADOS[c].pro; });
+var PLANES = load("af-admin-planes", []);
+var $ = function(id){ return document.getElementById(id); };
+function money(v, c){ return new Intl.NumberFormat(P[c].loc,{style:"currency",currency:P[c].cur,maximumFractionDigits:P[c].cur==="USD"||P[c].cur==="EUR"||P[c].cur==="PEN"||P[c].cur==="GTQ"?2:0}).format(v); }
+function esc(t){ return String(t==null?"":t).replace(/[&<>"]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch];}); }
 
-/* ---------- Proveedores (USD por millón de tokens; audio USD por minuto) ---------- */
-const DEFAULT_PROVIDERS = [
-  {id:'deepseek', name:'DeepSeek', color:'#4D6BFE', on:true, key:'',
-   models:[{id:'deepseek-chat', label:'DeepSeek V3 (chat)', in:0.27, out:1.10}]},
-  {id:'openai', name:'OpenAI (GPT)', color:'#10A37F', on:true, key:'',
-   models:[{id:'gpt-4o-mini', label:'GPT-4o mini', in:0.15, out:0.60},
-           {id:'gpt-4o-mini-transcribe', label:'GPT-4o mini Transcribe (audio)', audio:0.003}]},
-  {id:'anthropic', name:'Anthropic (Claude)', color:'#D97757', on:true, key:'',
-   models:[{id:'claude-haiku-4-5', label:'Claude Haiku 4.5', in:1.00, out:5.00}]},
-  {id:'google', name:'Google (Gemini)', color:'#4285F4', on:false, key:'',
-   models:[{id:'gemini-flash', label:'Gemini Flash', in:0.10, out:0.40}]},
-  {id:'groq', name:'Groq (Whisper)', color:'#F55036', on:false, key:'',
-   models:[{id:'whisper-large-v3-turbo', label:'Whisper large v3 turbo (audio)', audio:0.000667}]}
-];
-const TASKS = [
-  {id:'filtro', name:'Filtro de mensajes', desc:'Descarta lo que no es de compras antes de gastar créditos. Sin IA: reglas y palabras clave.', type:'text', allowNone:true},
-  {id:'texto', name:'Lectura de mensajes (barrido cada ~10 min)', desc:'Convierte los mensajes del grupo en productos de la lista.', type:'text'},
-  {id:'audio', name:'Notas de voz', desc:'Transcribe el audio; luego el texto pasa por el modelo de lectura.', type:'audio'},
-  {id:'preguntas', name:'Preguntas al bot', desc:'"¿Cuánto llevamos?", "¿qué falta?". Modelo más fuerte.', type:'text'}
-];
-const DEFAULT_ROUTING = {filtro:'none', texto:'deepseek/deepseek-chat', audio:'openai/gpt-4o-mini-transcribe', preguntas:'openai/gpt-4o-mini'};
-
-let providers = store.get('af.providers', DEFAULT_PROVIDERS);
-let routing = store.get('af.routing', DEFAULT_ROUTING);
-
-function findModel(ref){
-  if(!ref || ref==='none') return null;
-  const [p,m] = ref.split('/');
-  const prov = providers.find(x=>x.id===p);
-  return prov && prov.on ? prov.models.find(x=>x.id===m) || null : null;
-}
-function modelOptions(type, allowNone){
-  let o = allowNone ? '<option value="none">Sin IA (reglas)</option>' : '';
-  providers.forEach(p => p.models.forEach(m => {
-    const isAudio = m.audio !== undefined;
-    if((type==='audio') !== isAudio) return;
-    o += `<option value="${p.id}/${m.id}" ${p.on?'':'disabled'}>${p.name} · ${m.label}${p.on?'':' (apagado)'}</option>`;
-  }));
-  return o;
-}
-function renderRouting(){
-  $('#routing').innerHTML = TASKS.map(t => `
-    <div class="route"><label class="field" for="r-${t.id}">${t.name}</label>
-      <select id="r-${t.id}" data-task="${t.id}">${modelOptions(t.type, t.allowNone)}</select>
-      <p>${t.desc}</p></div>`).join('');
-  TASKS.forEach(t => {
-    const sel = $('#r-'+t.id);
-    sel.value = routing[t.id];
-    if(sel.value !== routing[t.id] || sel.selectedOptions[0]?.disabled){ sel.value = sel.querySelector('option:not([disabled])')?.value || ''; routing[t.id]=sel.value; }
-    sel.onchange = () => { routing[t.id]=sel.value; store.set('af.routing',routing); renderPlans(); renderResumen(); toast('Enrutamiento guardado'); };
-  });
-}
-function renderProviders(){
-  $('#providers').innerHTML = providers.map((p,i) => `
-    <div class="card prov">
-      <div class="prov-top">
-        <h3><span class="dot" style="background:${p.color}">${p.name[0]}</span>${p.name}</h3>
-        <label class="switch" title="Activar proveedor"><input type="checkbox" data-on="${i}" ${p.on?'checked':''} aria-label="Activar ${p.name}"><span></span></label>
-      </div>
-      <div class="row">
-        <span class="pill ${p.key?'p-ok':'p-warn'}">${p.key?'Llave ····'+p.key:'Sin llave'}</span>
-        <span class="pill ${p.on?'p-ok':'p-bad'}">${p.on?'Activo':'Apagado'}</span>
-      </div>
-      <div class="row"><input type="password" placeholder="Pegar API key" data-key="${i}" aria-label="API key de ${p.name}" style="flex:1"><button class="btn sm" data-save="${i}">Guardar</button></div>
-      <table class="models"><thead><tr><th>Modelo</th><th class="num">Entrada $/M</th><th class="num">Salida $/M</th></tr></thead><tbody>
-        ${p.models.map((m,j)=> m.audio!==undefined
-          ? `<tr><td>${m.label}</td><td class="num" colspan="2"><input type="number" step="0.0001" min="0" value="${m.audio}" data-m="${i}.${j}.audio" aria-label="USD por minuto"> /min</td></tr>`
-          : `<tr><td>${m.label}</td><td class="num"><input type="number" step="0.01" min="0" value="${m.in}" data-m="${i}.${j}.in" aria-label="Entrada"></td><td class="num"><input type="number" step="0.01" min="0" value="${m.out}" data-m="${i}.${j}.out" aria-label="Salida"></td></tr>`).join('')}
-      </tbody></table>
-    </div>`).join('') + `
-    <div class="card prov" style="justify-content:center;align-items:flex-start">
-      <h3>Agregar otro proveedor</h3>
-      <p style="color:var(--muted);font-size:.88rem">Cualquier API compatible con OpenAI (Mistral, Together, OpenRouter, Qwen…).</p>
-      <div class="row"><input type="text" id="newp" placeholder="Nombre del proveedor" style="flex:1"><button class="btn sm" id="addp">Agregar</button></div>
-    </div>`;
-  document.querySelectorAll('[data-on]').forEach(el => el.onchange = () => { providers[el.dataset.on].on = el.checked; saveProviders('Proveedor '+(el.checked?'activado':'apagado')); });
-  document.querySelectorAll('[data-save]').forEach(el => el.onclick = () => {
-    const inp = document.querySelector(`[data-key="${el.dataset.save}"]`);
-    const v = inp.value.trim(); if(v.length < 8){ toast('La llave parece muy corta'); return; }
-    providers[el.dataset.save].key = v.slice(-4); inp.value=''; saveProviders('Llave guardada (prototipo: solo los últimos 4)');
-  });
-  document.querySelectorAll('[data-m]').forEach(el => el.onchange = () => {
-    const [i,j,f] = el.dataset.m.split('.'); providers[i].models[j][f] = Math.max(0, parseFloat(el.value)||0); saveProviders('Precio actualizado', false);
-  });
-  $('#addp').onclick = () => {
-    const n = $('#newp').value.trim(); if(!n) return;
-    providers.push({id:n.toLowerCase().replace(/\W+/g,'-'), name:n, color:'#6E5F73', on:false, key:'', models:[{id:'modelo', label:'Modelo principal', in:0.5, out:1.5}]});
-    saveProviders('Proveedor agregado');
+/* Tabs */
+document.querySelectorAll("aside nav button").forEach(function(b){
+  b.onclick = function(){
+    document.querySelectorAll("aside nav button").forEach(function(x){ x.setAttribute("aria-selected", x===b); });
+    ["precios","activar","planes","correos"].forEach(function(t){ $("tab-"+t).hidden = t !== b.dataset.tab; });
+    if (b.dataset.tab === "planes") renderPlanes();
   };
-}
-function saveProviders(msg, rerender=true){
-  store.set('af.providers', providers);
-  if(rerender) renderProviders();
-  renderRouting(); renderPlans(); renderResumen();
-  if(msg) toast(msg);
-}
-
-/* ---------- Planes y márgenes ---------- */
-const DEFAULT_GLOBAL = {trm:4100, iva:19, tokIn:600, tokOut:150, askShare:10, waTpl:0.0008, infra:300};
-const DEFAULT_PLANS = [
-  {id:'plus',  name:'Plus Hogar', price:12900,  fee:15, msgs:600,   audio:60,   tpl:20,  groups:1},
-  {id:'neg',   name:'Negocio',    price:49900,  fee:3.5, msgs:3000,  audio:300,  tpl:100, groups:3},
-  {id:'emp',   name:'Empresa',    price:149900, fee:3.5, msgs:12000, audio:1200, tpl:400, groups:10}
-];
-let G = store.get('af.global', DEFAULT_GLOBAL);
-let plans = store.get('af.plans', DEFAULT_PLANS);
-
-function textCostUSD(model, n){ return model ? n*(G.tokIn*model.in + G.tokOut*model.out)/1e6 : 0; }
-function planCalc(p){
-  const net = p.price/(1+G.iva/100)*(1-p.fee/100);
-  const mText = findModel(routing.texto), mAsk = findModel(routing.preguntas), mAudio = findModel(routing.audio);
-  const asks = p.msgs*G.askShare/100, reads = p.msgs-asks;
-  // audio: transcripción + el texto resultante pasa por el lector (~1 mensaje por minuto)
-  const usd = textCostUSD(mText, reads) + textCostUSD(mAsk, asks)
-            + (mAudio ? p.audio*mAudio.audio : 0) + textCostUSD(mText, p.audio)
-            + p.tpl*G.waTpl;
-  const cost = usd*G.trm + G.infra*p.groups;
-  const margin = net>0 ? (net-cost)/net : 0;
-  return {net, cost, margin, ai:usd*G.trm};
-}
-function marginPill(m){ const c = m>=.3 ? 'p-ok' : m>=.15 ? 'p-warn' : 'p-bad'; return `<span class="margin ${c}"><span>Margen peor caso</span><span>${(m*100).toFixed(0)}%</span></span>`; }
-function renderGlobal(){
-  const F = [['trm','TRM (COP por USD)',1],['iva','IVA %',1],['tokIn','Tokens entrada por mensaje',10],['tokOut','Tokens salida por mensaje',10],['askShare','% mensajes que son preguntas',1],['waTpl','WhatsApp plantilla (USD c/u)',0.0001],['infra','Infraestructura por grupo (COP)',50]];
-  $('#global').innerHTML = F.map(([k,l,s])=>`<label class="field">${l}<input type="number" step="${s}" min="0" value="${G[k]}" data-g="${k}" style="width:100%"></label>`).join('');
-  document.querySelectorAll('[data-g]').forEach(el => el.onchange = () => { G[el.dataset.g] = Math.max(0, parseFloat(el.value)||0); store.set('af.global',G); renderPlans(); renderResumen(); });
-}
-function renderPlans(){
-  $('#plans').innerHTML = plans.map((p,i) => {
-    const r = planCalc(p);
-    const F = [['price','Precio mensual (COP)',100],['fee','Comisión tienda/pasarela %',0.5],['msgs','Mensajes de bot incluidos',50],['audio','Minutos de audio incluidos',5],['tpl','Plantillas WhatsApp/mes',5],['groups','Grupos con bot',1]];
-    return `<div class="card plan">
-      <div class="prov-top"><h2>${p.name}</h2><span class="pill p-plan">$${fmt(p.price)}/mes</span></div>
-      ${F.map(([k,l,s])=>`<div class="kv"><label for="p${i}${k}">${l}</label><input id="p${i}${k}" type="number" step="${s}" min="0" value="${p[k]}" data-p="${i}.${k}"></div>`).join('')}
-      <hr>
-      <div class="res"><span>Ingreso neto</span><b>$${fmt(r.net)}</b></div>
-      <div class="res"><span>Costo IA + WhatsApp</span><b>$${fmt(r.ai)}</b></div>
-      <div class="res"><span>Costo total peor caso</span><b>$${fmt(r.cost)}</b></div>
-      <div class="res"><span>Ganancia por cliente</span><b>$${fmt(r.net-r.cost)}</b></div>
-      ${marginPill(r.margin)}
-    </div>`;}).join('');
-  document.querySelectorAll('[data-p]').forEach(el => el.onchange = () => {
-    const [i,k] = el.dataset.p.split('.'); plans[i][k] = Math.max(0, parseFloat(el.value)||0); store.set('af.plans',plans); renderPlans(); renderResumen();
-  });
-}
-$('#reset').onclick = () => { G = structuredClone(DEFAULT_GLOBAL); plans = structuredClone(DEFAULT_PLANS); store.set('af.global',G); store.set('af.plans',plans); renderGlobal(); renderPlans(); renderResumen(); toast('Valores restaurados'); };
-
-/* ---------- Usuarios (ejemplo) ---------- */
-const USERS = [
-  ['Casa Rodríguez','Laura Rodríguez','plus','Bogotá',4,412],
-  ['Apto 502 roommates','Andrés Gómez','plus','Medellín',3,588],
-  ['Familia Pérez','Diana Pérez','gratis','Cali',5,0],
-  ['Ferretería El Tornillo','Jorge Ramírez','neg','Bucaramanga',7,1840],
-  ['Constructora Andina','Camila Torres','emp','Bogotá',38,9120],
-  ['Los Martínez','Felipe Martínez','plus','Barranquilla',2,96],
-  ['Restaurante Sazón','Paola Herrera','neg','Cartagena',6,2950],
-  ['Casa Castro','Sofía Castro','gratis','Pereira',4,0],
-  ['Oficina Nubes SAS','Mateo Ríos','neg','Bogotá',9,1210],
-  ['Hogar Vargas','Natalia Vargas','plus','Manizales',3,610]
-];
-const PLAN_NAMES = {gratis:'Gratis', plus:'Plus Hogar', neg:'Negocio', emp:'Empresa'};
-$('#fplan').innerHTML += Object.entries(PLAN_NAMES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
-function planById(id){ return plans.find(p=>p.id===id); }
-function userCost(u){
-  const p = planById(u[2]); if(!p || !p.msgs) return 0;
-  const share = u[5]/p.msgs; return planCalc(p).ai*share;
-}
-function renderUsers(){
-  const q = $('#q').value.toLowerCase(), f = $('#fplan').value;
-  $('#users').innerHTML = USERS.filter(u => (!f || u[2]===f) && (u[0]+u[1]+u[3]).toLowerCase().includes(q)).map(u => {
-    const p = planById(u[2]); const lim = p ? p.msgs : 0; const pct = lim ? Math.min(100, u[5]/lim*100) : 0;
-    const st = !lim ? '<span class="pill p-plan">Sin bot</span>' : pct>=95 ? '<span class="pill p-bad">Sin créditos</span>' : pct>=80 ? '<span class="pill p-warn">Por agotar</span>' : '<span class="pill p-ok">Activo</span>';
-    return `<tr><td><b>${u[0]}</b><br><small style="color:var(--muted)">${u[1]}</small></td>
-      <td><span class="pill p-plan">${PLAN_NAMES[u[2]]}</span></td><td>${u[3]}</td><td class="num">${u[4]}</td>
-      <td>${lim?`<div class="bar ${pct>=80?'hot':''}"><i style="width:${pct}%"></i></div><small style="color:var(--muted)">${fmt(u[5])} / ${fmt(lim)}</small>`:'—'}</td>
-      <td class="num">${lim?'$'+fmt(userCost(u)):'—'}</td><td>${st}</td>
-      <td>${lim?`<button class="btn ghost sm" data-topup="${u[0]}">+ créditos</button>`:''}</td></tr>`;
-  }).join('');
-  document.querySelectorAll('[data-topup]').forEach(b => b.onclick = () => toast('Créditos extra para '+b.dataset.topup+' (prototipo)'));
-}
-$('#q').oninput = renderUsers; $('#fplan').onchange = renderUsers;
-
-/* ---------- Resumen ---------- */
-function renderResumen(){
-  const paying = USERS.filter(u=>u[2]!=='gratis');
-  const net = paying.reduce((s,u)=>s+planCalc(planById(u[2])).net,0);
-  const ai = paying.reduce((s,u)=>s+userCost(u),0);
-  const m = net ? (net-ai)/net : 0;
-  const K = [['Grupos activos',USERS.length,'+3 esta semana','up'],['Pagando',paying.length,`${Math.round(paying.length/USERS.length*100)}% conversión`,'up'],
-             ['Ingreso neto/mes','$'+fmt(net),'después de IVA y comisiones',''],['Gasto IA real','$'+fmt(ai),'uso real de créditos',''],
-             ['Margen real',(m*100).toFixed(0)+'%', m>=.3?'sobre la meta de 30%':'bajo la meta de 30%', m>=.3?'up':'down']];
-  $('#kpis').innerHTML = K.map(([l,v,s,c])=>`<div class="card kpi"><small>${l}</small><b>${v}</b><span class="${c}">${s}</span></div>`).join('');
-  const months = ['May','Jun','Jul','Ago','Sep','Oct'], growth=[.15,.25,.4,.55,.75,1];
-  const max = net;
-  $('#chart').innerHTML = months.map((mo,i)=>`<div><span style="display:flex;gap:3px;align-items:flex-end;height:100%;width:100%;justify-content:center">
-      <i style="height:${net*growth[i]/max*100}%" title="Ingreso ${fmt(net*growth[i])}"></i><i style="height:${Math.max(2,ai*growth[i]/max*100)}%;background:var(--berenjena)" title="Gasto ${fmt(ai*growth[i])}"></i></span><small>${mo}</small></div>`).join('');
-  const al = [];
-  plans.forEach(p => { const r = planCalc(p); if(r.margin < .3) al.push(['p-bad', `${p.name}: margen peor caso ${(r.margin*100).toFixed(0)}% (meta 30%)`]); });
-  USERS.forEach(u => { const p = planById(u[2]); if(p && u[5]/p.msgs >= .8) al.push(['p-warn', `${u[0]} usó ${Math.round(u[5]/p.msgs*100)}% de sus créditos`]); });
-  TASKS.forEach(t => { if(routing[t.id]!=='none' && !findModel(routing[t.id])) al.push(['p-bad', `Sin modelo activo para "${t.name}"`]); });
-  providers.filter(p=>p.on && !p.key).forEach(p => al.push(['p-warn', `${p.name} está activo pero sin llave`]));
-  $('#alerts').innerHTML = al.length ? al.map(([c,t])=>`<tr><td><span class="pill ${c}">${c==='p-bad'?'Urgente':'Revisar'}</span></td><td>${t}</td></tr>`).join('') : '<tr><td>Todo en orden.</td></tr>';
-}
-
-/* ---------- Navegación y tema ---------- */
-document.querySelectorAll('.nav-btn').forEach(b => b.onclick = () => {
-  document.querySelectorAll('.nav-btn').forEach(x=>x.removeAttribute('aria-current')); b.setAttribute('aria-current','page');
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on')); $('#v-'+b.dataset.view).classList.add('on');
-  try{ sessionStorage.setItem('af.view', b.dataset.view); }catch(e){}
 });
-$('#theme').onclick = () => {
-  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+
+/* Precios */
+var CAMPOS = [["plus","Plus /mes"],["anual","Plus /año"],["pro","Pro /mes"],["neg","Negocio /mes"],["emp","Empresa /mes"],["iva","IVA"],["fx","x 1 USD"]];
+function renderPrecios(){
+  var h = "<tr><th>País</th><th>Moneda</th>" + CAMPOS.map(function(c){return "<th>"+c[1]+"</th>";}).join("") + "<th>Corporativo</th><th>Pasarelas web</th></tr>";
+  Object.keys(P).forEach(function(c){
+    var p = P[c];
+    h += "<tr><td><b>"+p.n+"</b></td><td>"+p.cur+"</td>" + CAMPOS.map(function(f){
+      var v = f[0]==="iva" ? Math.round(p.iva*100) : p[f[0]];
+      return '<td><input type="number" step="any" data-c="'+c+'" data-f="'+f[0]+'" value="'+v+'">'+(f[0]==="iva"?" %":"")+"</td>";
+    }).join("") + "<td>A la medida</td><td>" + (Object.keys(p.gw).map(function(g){return '<span class="pill web">'+GWN[g]+'</span>';}).join(" ") || '<span class="pill warn">Solo manual</span>') + "</td></tr>";
+  });
+  $("tPrecios").innerHTML = h;
+  $("tPrecios").querySelectorAll("input").forEach(function(i){
+    i.oninput = function(){ var v = parseFloat(i.value)||0; P[i.dataset.c][i.dataset.f] = i.dataset.f==="iva" ? v/100 : v; renderNeto(); };
+  });
+  renderNeto();
+}
+function renderNeto(){
+  var usd = parseFloat($("costo").value)||0;
+  var h = "<tr><th>País</th><th class='num'>Plus mensual (app)</th><th class='num'>Plus anual /mes (app)</th><th class='num'>Pro mensual (app)</th><th class='num'>Negocio (web, 10 usuarios)</th><th class='num'>Empresa (web, 50 usuarios)</th><th class='num'>% Plus</th></tr>";
+  Object.keys(P).forEach(function(c){
+    var p = P[c], cost = usd*p.fx;
+    function app(price){ var n = price/(1+p.iva); return n - n*.15 - cost; }
+    function web(price, users){
+      var g = p.gw.wompi || p.gw.mp || [0,0];
+      var n = price/(1+p.iva); return n - (price*g[0]/100 + g[1]) - cost*users*0.3; // ~30 % de usuarios usan el bot a fondo
+    }
+    var a = app(p.plus), b = app(p.anual/12), pr = app(p.pro) - cost*0.33, ng = web(p.neg,10), em = web(p.emp,50), pct = Math.round(a/p.plus*100);
+    h += "<tr><td><b>"+p.n+"</b></td><td class='num'>"+money(a,c)+"</td><td class='num'>"+money(b,c)+"</td><td class='num'>"+money(pr,c)+"</td><td class='num'>"+money(ng,c)+"</td><td class='num'>"+money(em,c)+"</td><td class='num'><span class='pill "+(pct>=30?"ok":"bad")+"'>"+pct+" %</span></td></tr>";
+  });
+  $("tNeto").innerHTML = h;
+}
+$("costo").oninput = renderNeto;
+$("guardarPrecios").onclick = function(){ store("af-admin-precios", P); $("msgPrecios").textContent = "Guardado " + new Date().toLocaleTimeString("es-CO"); fillPrecio(); };
+$("restaurarPrecios").onclick = function(){ P = JSON.parse(JSON.stringify(APROBADOS)); store("af-admin-precios", P); renderPrecios(); fillPrecio(); $("msgPrecios").textContent = "Precios aprobados restaurados"; };
+
+/* Activar */
+var modo = "manual";
+Object.keys(P).forEach(function(c){ var o = document.createElement("option"); o.value = c; o.textContent = P[c].n; $("fPais").appendChild(o); });
+$("fIni").value = new Date().toISOString().slice(0,10);
+function fillPrecio(){
+  var c = $("fPais").value, p = P[c], pl = $("fPlan").value, per = +$("fPer").value, v;
+  if (pl === "plus" || pl === "pro") v = 0;
+  else if (pl === "corp") v = "";
+  else v = per === 12 ? +(p[pl]*10).toFixed(2) : p[pl];
+  $("fPrecio").value = v;
+  $("fCupos").value = pl === "neg" ? 10 : pl === "emp" ? 50 : (pl === "plus" || pl === "pro") ? 5 : 100;
+  checkGw(); resumen();
+}
+function checkGw(){
+  var c = $("fPais").value, w = $("gwWarn");
+  if (modo !== "manual" && !P[c].gw[modo]) {
+    w.hidden = false; w.textContent = GWN[modo] + " no está disponible en " + P[c].n + ". Usa activación manual o configura otra pasarela para ese país (p. ej. Stripe en España, PayPhone en Ecuador).";
+    $("accion").disabled = true;
+  } else { w.hidden = true; $("accion").disabled = false; }
+}
+function resumen(){
+  var c = $("fPais").value, v = parseFloat($("fPrecio").value);
+  $("resumen").textContent = isNaN(v) ? "" : "Total: " + money(v, c) + " " + ($("fPer").value==="12"?"por 12 meses":"por mes");
+}
+["fPais","fPlan","fPer"].forEach(function(id){ $(id).onchange = fillPrecio; });
+$("fPrecio").oninput = resumen;
+document.querySelectorAll("#modo button").forEach(function(b){
+  b.onclick = function(){
+    modo = b.dataset.m;
+    document.querySelectorAll("#modo button").forEach(function(x){ x.setAttribute("aria-pressed", x===b); });
+    $("manualBox").hidden = modo !== "manual";
+    $("accion").textContent = modo === "manual" ? "Activar plan" : "Crear enlace de " + GWN[modo];
+    $("salida").hidden = true; checkGw();
+  };
+});
+$("accion").onclick = function(){
+  var org = $("fOrg").value.trim(), c = $("fPais").value;
+  if (!org) { $("fOrg").focus(); return; }
+  if (modo === "manual" && !$("fRef").value.trim()) { $("fRef").focus(); $("fRef").placeholder = "Obligatorio: referencia o motivo"; return; }
+  var per = +$("fPer").value, ini = new Date($("fIni").value + "T00:00:00"), fin = new Date(ini); fin.setMonth(fin.getMonth() + per);
+  var id = "AF-" + Date.now().toString(36).toUpperCase();
+  var plan = {id:id, org:org, nit:$("fNit").value, mail:$("fMail").value, tel:$("fTel").value, pais:c, plan:$("fPlan").options[$("fPlan").selectedIndex].text,
+    per:per, cupos:+$("fCupos").value, precio:parseFloat($("fPrecio").value)||0, ini:$("fIni").value, fin:fin.toISOString().slice(0,10),
+    fuente: modo === "manual" ? $("fMedio").value : GWN[modo], ref: modo === "manual" ? $("fRef").value : id,
+    estado: modo === "manual" ? "activo" : "pendiente", nota:$("fNota").value, creado:new Date().toISOString()};
+  PLANES.unshift(plan); store("af-admin-planes", PLANES);
+  var s = $("salida"); s.hidden = false;
+  if (modo === "manual") {
+    s.innerHTML = "<b>Plan activado.</b> " + esc(org) + " · " + esc(plan.plan) + " · " + plan.cupos + " cupos · hasta " + plan.fin + ". Ref.: " + esc(plan.ref) +
+      (c === "CO" ? "<br><span class='note'>Siguiente paso: generar factura electrónica en Alegra.</span>" : "");
+  } else {
+    // En producción: llamada al backend que crea el link con la API de la pasarela (Wompi: /payment_links; Mercado Pago: /checkout/preferences).
+    var url = modo === "wompi" ? "https://checkout.wompi.co/l/" + id : "https://www.mercadopago.com/checkout/v1/redirect?pref_id=" + id;
+    var msg = "Hola " + org + ", este es el enlace para pagar AlgoFalta " + plan.plan + " (" + money(plan.precio, c) + "): " + url;
+    s.innerHTML = "<b>Enlace creado (simulado en el prototipo):</b><br><a href='#' onclick='return false'>" + esc(url) + "</a>" +
+      "<div class='row' style='margin-top:10px'><button class='btn ghost' id='copiar'>Copiar mensaje</button>" +
+      (plan.tel ? "<a class='btn ghost' target='_blank' rel='noopener' href='https://wa.me/" + plan.tel.replace(/\D/g,"") + "?text=" + encodeURIComponent(msg) + "'>Enviar por WhatsApp</a>" : "") +
+      (plan.mail ? "<a class='btn ghost' href='mailto:" + esc(plan.mail) + "?subject=" + encodeURIComponent("Pago AlgoFalta " + plan.plan) + "&body=" + encodeURIComponent(msg) + "'>Enviar por correo</a>" : "") + "</div>" +
+      "<p class='note'>Queda como <b>pendiente</b>; se activa solo cuando la pasarela confirme el pago.</p>";
+    $("copiar").onclick = function(){ try { navigator.clipboard.writeText(msg); this.textContent = "Copiado"; } catch(e){} };
+  }
 };
 
-renderProviders(); renderRouting(); renderGlobal(); renderPlans(); renderUsers(); renderResumen();
-try{ const v = sessionStorage.getItem('af.view'); if(v) document.querySelector(`[data-view="${v}"]`)?.click(); }catch(e){}
+/* Planes */
+function renderPlanes(){
+  var hoy = new Date().toISOString().slice(0,10);
+  var h = "<tr><th>Ref.</th><th>Organización</th><th>País</th><th>Plan</th><th class='num'>Cupos</th><th class='num'>Precio</th><th>Fuente</th><th>Vence</th><th>Estado</th><th></th></tr>";
+  if (!PLANES.length) h += "<tr><td colspan='10' class='muted'>Aún no hay planes. Actívalos en la pestaña “Activar plan”.</td></tr>";
+  PLANES.forEach(function(p, i){
+    var st = p.estado;
+    if (st === "activo" && p.fin < hoy) st = "vencido";
+    else if (st === "activo" && (new Date(p.fin) - new Date()) / 864e5 <= 7) st = "por vencer";
+    var cls = {activo:"ok","por vencer":"warn",pendiente:"warn",vencido:"bad",cancelado:"bad"}[st] || "";
+    h += "<tr><td>"+esc(p.ref)+"</td><td><b>"+esc(p.org)+"</b><br><span class='note'>"+esc(p.nit)+"</span></td><td>"+esc(P[p.pais]?P[p.pais].n:p.pais)+"</td><td>"+esc(p.plan)+(p.per===12?" (anual)":"")+"</td><td class='num'>"+p.cupos+"</td><td class='num'>"+money(p.precio,p.pais)+"</td><td>"+esc(p.fuente)+"</td><td>"+p.fin+"</td><td><span class='pill "+cls+"'>"+st+"</span></td><td>" +
+      (p.estado==="pendiente" ? "<button class='btn ghost' data-pay='"+i+"'>Marcar pagado</button> " : "") +
+      (p.estado!=="cancelado" ? "<button class='btn ghost' data-cancel='"+i+"'>Cancelar</button>" : "") + "</td></tr>";
+  });
+  $("tPlanes").innerHTML = h;
+  $("tPlanes").querySelectorAll("[data-pay]").forEach(function(b){ b.onclick = function(){ PLANES[b.dataset.pay].estado = "activo"; store("af-admin-planes", PLANES); renderPlanes(); }; });
+  $("tPlanes").querySelectorAll("[data-cancel]").forEach(function(b){ b.onclick = function(){ if (confirm("¿Cancelar este plan?")) { PLANES[b.dataset.cancel].estado = "cancelado"; store("af-admin-planes", PLANES); renderPlanes(); } }; });
+}
+
+renderPrecios(); fillPrecio();
 </script>
+<script src="correos.js"></script>
 </body>
 </html>
