@@ -54,6 +54,8 @@ nav .btn{padding:10px 18px}
 .hero > div{min-width:0}
 .hero .copy{display:flex;flex-direction:column;gap:22px}
 .hero h1 .hl{color:var(--accent)}
+.hero h1 .rot{color:var(--accent);display:inline-block;transition:opacity .35s ease,transform .35s ease}
+.hero h1 .rot.out{opacity:0;transform:translateY(-.35em)}
 .ctas{display:flex;flex-wrap:wrap;gap:12px}
 .trust{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-weight:700;font-size:.9rem}
 .trust span::before{content:"✓ ";color:var(--accent)}
@@ -250,6 +252,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
     <div class="navlinks">
       <a href="#como">Cómo funciona</a>
       <a href="#cuentas">Cuentas claras</a>
+      <a href="#ahorro">Ahorro</a>
       <a href="#bot">WhatsApp</a>
       <a href="#negocios">Negocios</a>
       <a href="#planes">Planes</a>
@@ -263,7 +266,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
   <section class="hero">
     <div class="copy">
       <span class="eyebrow">Lista de mercado compartida · <label class="geo-pick"><span class="sr">País</span><select id="pais" aria-label="Cambiar país"></select></label></span>
-      <h1>Que en la casa <span class="hl">nunca falte</span> nada.</h1>
+      <h1>Que en <span class="rot" id="lugar">la casa</span> nunca falte nada.</h1>
       <p class="lead">Una sola lista para la familia, la pareja o los roommates. Todos ven lo que hace falta en tiempo real y saben cuánto va a costar el mercado antes de salir.</p>
       <div class="ctas" id="descargar">
         <a class="btn" href="#descargar"><i data-lucide="apple"></i><span class="stack"><small>Próximamente en</small>App Store</span></a>
@@ -400,6 +403,21 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
     <p class="disclaimer">Los precios son de referencia y el total es estimado. El precio final es el del supermercado. AlgoFalta no está afiliada a ninguna cadena.</p>
   </section>
 
+  <section id="ahorro">
+    <div class="head center">
+      <span class="eyebrow">Comprar y ahorrar</span>
+      <h2>Cada cosa donde sale más barata.</h2>
+      <p class="lead">Mira el precio de cada producto en <span data-geo="stores3">D1, Ara, Éxito</span>, repártanse las tiendas y, al volver, la factura actualiza la lista sola.</p>
+    </div>
+    <div class="biz">
+      <div class="bz"><i><i data-lucide="badge-percent"></i></i><h3>Te sugerimos dónde comprar</h3><p>Cada producto muestra su precio en cada supermercado. La app marca el más barato y tú decides dónde comprarlo.</p><span class="ex">"Los huevos salen más baratos en Ara"</span></div>
+      <div class="bz"><i><i data-lucide="store"></i></i><h3>La lista por supermercado</h3><p>Ordénala por tienda con el subtotal de cada una, y mira de una vez cuánto vas a gastar.</p><span class="ex">D1 · 4 productos · $ 64.500</span></div>
+      <div class="bz"><i><i data-lucide="users"></i></i><h3>Repártanse las tiendas</h3><p>Cada quien toma un supermercado. Con «Estoy aquí» solo ves lo que te toca comprar donde estás.</p><span class="ex">Laura en D1, Andrés en Ara</span></div>
+      <div class="bz"><i><i data-lucide="circle-alert"></i></i><h3>¿No había o cambió el precio?</h3><p>Pásalo a otra tienda, déjalo pendiente o corrige el precio. El grupo se entera al instante.</p><span class="ex">"No había queso en D1"</span></div>
+      <div class="bz"><i><i data-lucide="receipt"></i></i><h3>Escanea la factura <small style="color:var(--accent-ink)">· Plus</small></h3><p>Una foto a la factura y queda marcado lo que compraste, con el precio real. Si llevaste algo que no estaba en la lista, tú decides si lo agregas.</p><span class="ex">Y la compra queda en Cuentas claras</span></div>
+    </div>
+  </section>
+
   <section id="negocios">
     <div class="head">
       <span class="eyebrow">AlgoFalta para negocios</span>
@@ -430,7 +448,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
         <span class="tag">Recomendado</span>
         <h3>Plus Hogar</h3><p class="for">Familias y parejas</p>
         <div class="price"><span data-geo="p-plus">$12.900</span> <small>/mes</small></div>
-        <ul><li>Grupos ilimitados</li><li>Bot en WhatsApp con voz</li><li>Estadísticas de gastos del grupo</li><li>Presupuesto del mercado</li><li>Despensa: avisos de «se te acaba»</li><li>Aviso de productos por vencer</li><li>Mercado recurrente</li></ul>
+        <ul><li>Grupos ilimitados</li><li>Bot en WhatsApp con voz</li><li>Escanear facturas</li><li>Estadísticas de gastos del grupo</li><li>Presupuesto del mercado</li><li>Despensa: avisos de «se te acaba»</li><li>Aviso de productos por vencer</li><li>Mercado recurrente</li></ul>
         <a class="btn" href="#descargar">Probar Plus</a>
       </div>
       <div class="plan">
@@ -486,6 +504,18 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap}
   </footer>
 </main>
 
+<script>
+(function(){
+  var el=document.getElementById('lugar');if(!el)return;
+  var lugares=['la casa','la oficina','la bodega','la empresa','el apartamento','la finca','el restaurante'];
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var i=0;
+  setInterval(function(){
+    el.classList.add('out');
+    setTimeout(function(){i=(i+1)%lugares.length;el.textContent=lugares[i];el.classList.remove('out');},350);
+  },2200);
+})();
+</script>
 <script src="comercios.js"></script>
 <script src="geo.js"></script>
 <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
