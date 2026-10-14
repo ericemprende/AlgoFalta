@@ -1,10 +1,10 @@
 # Formulario "Seguridad de los datos" (Play Console)
 
-Debe coincidir con `legal/privacidad.html`. Ajustar si cambia la app.
+Debe coincidir con https://algofalta.com/privacidad. Ajustar si cambia la app.
 
 **¿Recolecta o comparte datos?** Sí
 **¿Datos cifrados en tránsito?** Sí
-**¿Los usuarios pueden pedir que se borren?** Sí → URL `legal/eliminar-cuenta.html`
+**¿Los usuarios pueden pedir que se borren?** Sí → https://algofalta.com/eliminar-cuenta
 
 | Tipo de dato (Play) | Recolectado | Compartido* | Opcional | Finalidad |
 |---|---|---|---|---|
