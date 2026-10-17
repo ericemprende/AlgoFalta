@@ -42,4 +42,6 @@ Misma clave en los dos proyectos (32+ caracteres, inventada por ti, nunca en el 
 
 ## Correos de login (confirmar cuenta, recuperar clave)
 
-Esos los envía Supabase, no el código. En el proyecto Supabase de AlgoFalta: Authentication → SMTP → Resend (`smtp.resend.com`, puerto 465, usuario `resend`, contraseña = una llave de Resend) con remitente `hola@algofalta.com`. Las plantillas con la marca AlgoFalta se agregan después.
+**Actualizado 2026-10-16:** también salen por VentuPlay. La función `public.send_auth_email` (Send Email Hook de Supabase, migración `20261016000000`) manda el código con `kind: "login_code"` y `data.code`. No hace falta SMTP. Lo de abajo queda solo como alternativa.
+
+Antes: esos los envía Supabase, no el código. En el proyecto Supabase de AlgoFalta: Authentication → SMTP → Resend (`smtp.resend.com`, puerto 465, usuario `resend`, contraseña = una llave de Resend) con remitente `hola@algofalta.com`. Las plantillas con la marca AlgoFalta se agregan después.
