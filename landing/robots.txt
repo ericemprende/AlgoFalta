@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /app
 
-Sitemap: https://algofalta.com/sitemap.xml
+Sitemap: https://www.algofalta.com/sitemap.xml

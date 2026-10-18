@@ -12,7 +12,7 @@ import html, json, re
 from datetime import date
 from pathlib import Path
 
-SITE = "https://algofalta.com"
+SITE = "https://www.algofalta.com"
 ROOT = Path(__file__).resolve().parents[2]
 SRC = Path(__file__).parent / "articulos"
 OUT = ROOT / "landing" / "blog"
