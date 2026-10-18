@@ -1,6 +1,7 @@
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, Share, Text, View } from 'react-native';
+import { Ahorro } from '@/components/Ahorro';
 import { Btn, Card, Empty, Field, ReportSheet, Screen, T, styles } from '@/components/ui';
 import { useSession } from '@/lib/session';
 import { cop, errorText, supabase } from '@/lib/supabase';
@@ -10,7 +11,8 @@ type Item = { id: string; name: string; quantity: string | null; added_by: strin
 type Member = { user_id: string; role: string; name: string };
 type Purchase = { id: string; amount: number; store: string | null; paid_by: string | null; created_by: string | null; purchased_at: string };
 type Balance = { user_id: string; paid: number; fair_share: number; balance: number };
-type Tab = 'lista' | 'cuentas' | 'miembros';
+type Tab = 'lista' | 'ahorro' | 'cuentas' | 'miembros';
+const TABS: Record<Tab, string> = { lista: 'Lista', ahorro: 'Ahorro', cuentas: 'Cuentas', miembros: 'Miembros' };
 
 export default function Hogar() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -74,15 +76,16 @@ export default function Hogar() {
     <Screen>
       <Stack.Screen options={{ title: home?.name ?? '' }} />
       <View style={[styles.row, { backgroundColor: c.soft, borderRadius: 999, padding: 4 }]}>
-        {(['lista', 'cuentas', 'miembros'] as Tab[]).map((t) => (
+        {(Object.keys(TABS) as Tab[]).map((t) => (
           <Pressable key={t} onPress={() => setTab(t)} accessibilityRole="tab" accessibilityState={{ selected: tab === t }}
             style={{ flex: 1, paddingVertical: 10, borderRadius: 999, alignItems: 'center', backgroundColor: tab === t ? c.btn : 'transparent' }}>
-            <Text style={{ fontFamily: font.extra, color: tab === t ? c.btnFg : c.fg }}>{t === 'lista' ? 'Lista' : t === 'cuentas' ? 'Cuentas' : 'Miembros'}</Text>
+            <Text style={{ fontFamily: font.extra, color: tab === t ? c.btnFg : c.fg }}>{TABS[t]}</Text>
           </Pressable>
         ))}
       </View>
       {err ? <T style={{ color: c.danger }}>{err}</T> : null}
       {tab === 'lista' && listId ? <Lista id={id} listId={listId} items={items} name={name} me={me} onChange={() => loadItems(listId)} onReport={(i) => setReport({ kind: 'item', id: i.id, subject: `Producto: ${i.name}` })} /> : null}
+      {tab === 'ahorro' ? <Ahorro id={id} /> : null}
       {tab === 'cuentas' ? <Cuentas id={id} me={me} members={members} purchases={purchases} balances={balances} name={name} onChange={loadMoney} /> : null}
       {tab === 'miembros' && home ? <Miembros id={id} me={me} ownerId={home.owner_id} members={members} onChange={loadMembers}
         onReport={(m) => setReport({ kind: 'member', id: m.user_id, subject: `Miembro: ${m.name}` })} /> : null}
