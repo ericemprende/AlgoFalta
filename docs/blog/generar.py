@@ -87,7 +87,7 @@ def slugify(t):
 def head(title, desc, url, extra=""):
     return f"""<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc)}">
-<link rel="canonical" href="{url}"><link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="{url}"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="article"><meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}"><meta property="og:url" content="{url}"><meta property="og:locale" content="es_CO">
 <link rel="alternate" type="application/rss+xml" title="Blog de AlgoFalta" href="{SITE}/blog/rss.xml">
