@@ -17,3 +17,6 @@ article h2{font-size:1.4rem}
 .rel{border-top:1px solid var(--line);margin-top:32px}
 .rel h2{font-size:1.1rem}
 @media (max-width:420px){.grid{grid-template-columns:1fr}}
+figure{margin:28px 0}
+figure img,.post img{display:block;width:100%;height:auto;border-radius:16px}
+.post img{border-radius:10px;margin-bottom:4px}

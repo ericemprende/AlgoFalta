@@ -16,6 +16,7 @@ SITE = "https://algofalta.com"
 ROOT = Path(__file__).resolve().parents[2]
 SRC = Path(__file__).parent / "articulos"
 OUT = ROOT / "landing" / "blog"
+IMGS = json.loads((Path(__file__).parent / "ilustraciones" / "imagenes.json").read_text(encoding="utf-8"))
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
          "septiembre", "octubre", "noviembre", "diciembre"]
 
@@ -104,11 +105,32 @@ FOOT = """<footer><div class="wrap"><span>© 2026 AlgoFalta · Hecho en Colombia
 CTA = """<div class="cta"><b>¿Y si la lista se armara sola?</b><p>AlgoFalta es la lista de mercado compartida de la casa: todos ven lo que falta en tiempo real, con precios de referencia de supermercados colombianos, cuentas claras de quién pagó qué y un bot de WhatsApp al que le escribes «se acabó el café».</p><a class="btn" href="/#descargar">Crear mi lista gratis</a></div>"""
 
 
+def figura(slug, n, img, lazy=True):
+    load = ' loading="lazy"' if lazy else ' fetchpriority="high"'
+    return (f'<figure><img src="/blog/img/{slug}-{n}.jpg" width="1200" height="675"{load} decoding="async" '
+            f'alt="{html.escape(img["alt"])}"></figure>')
+
+
+def con_imagenes(a):
+    """Portada tras el primer párrafo; las demás antes del ## indicado en 'antes'."""
+    body = a["html"]
+    for n, img in enumerate(IMGS.get(a["slug"], []), 1):
+        if "antes" not in img:
+            body = body.replace("</p>", "</p>\n" + figura(a["slug"], n, img, lazy=False), 1)
+            continue
+        h2 = f'<h2 id="{slugify(img["antes"])}">'
+        if h2 not in body:
+            raise SystemExit(f"{a['slug']}: no existe la sección «{img['antes']}»")
+        body = body.replace(h2, figura(a["slug"], n, img) + "\n" + h2, 1)
+    return body
+
+
 def article_page(a, all_posts):
     url = f"{SITE}/blog/{a['slug']}"
+    portada = f"{SITE}/blog/img/{a['slug']}-1.jpg"
     ld = [{"@context": "https://schema.org", "@type": "BlogPosting", "headline": a["title"],
            "description": a["description"], "datePublished": a["date"], "dateModified": a["date"],
-           "inLanguage": "es-CO", "mainEntityOfPage": url, "keywords": a["keyword"],
+           "inLanguage": "es-CO", "mainEntityOfPage": url, "keywords": a["keyword"], "image": portada,
            "author": {"@type": "Organization", "name": "AlgoFalta", "url": SITE},
            "publisher": {"@type": "Organization", "name": "AlgoFalta", "url": SITE,
                          "logo": {"@type": "ImageObject", "url": f"{SITE}/favicon.svg"}}},
@@ -119,7 +141,9 @@ def article_page(a, all_posts):
     if a["faq"]:
         ld.append({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": r}} for q, r in a["faq"]]})
-    extra = "".join(f'\n<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in ld)
+    extra = (f'\n<meta property="og:image" content="{portada}"><meta property="og:image:width" content="1200">'
+             f'<meta property="og:image:height" content="675"><meta name="twitter:card" content="summary_large_image">')
+    extra += "".join(f'\n<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in ld)
     related = [p for p in all_posts if p["category"] == a["category"] and p["slug"] != a["slug"]]
     related += [p for p in all_posts if p not in related and p["slug"] != a["slug"]]
     rel = "".join(f'<li><a href="/blog/{p["slug"]}">{html.escape(p["title"])}</a></li>' for p in related[:3])
@@ -128,14 +152,14 @@ def article_page(a, all_posts):
             + f"""<main class="wrap"><article>
 <nav class="crumbs"><a href="/">Inicio</a> › <a href="/blog">Blog</a> › {html.escape(a['category'])}</nav>
 <h1>{html.escape(a['title'])}</h1><p class="meta">{fecha(a['date'])} · {mins} min de lectura</p>
-{a['html']}
+{con_imagenes(a)}
 {CTA}
 </article><aside class="rel"><h2>Sigue leyendo</h2><ul>{rel}</ul></aside></main>
 """ + FOOT)
 
 
 def index_page(posts):
-    cards = "".join(f"""<a class="post" href="/blog/{p['slug']}"><span class="cat">{html.escape(p['category'])}</span>
+    cards = "".join(f"""<a class="post" href="/blog/{p['slug']}"><img src="/blog/img/{p['slug']}-1.jpg" width="1200" height="675" loading="lazy" alt=""><span class="cat">{html.escape(p['category'])}</span>
 <h2>{html.escape(p['title'])}</h2><p>{html.escape(p['description'])}</p><span class="meta">{fecha(p['date'])}</span></a>""" for p in posts)
     ld = {"@context": "https://schema.org", "@type": "Blog", "name": "Blog de AlgoFalta", "url": f"{SITE}/blog",
           "inLanguage": "es-CO", "blogPost": [{"@type": "BlogPosting", "headline": p["title"],

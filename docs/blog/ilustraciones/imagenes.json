@@ -1,0 +1,102 @@
+{
+  "lista-de-mercado-mensual-colombia": [
+    {"k":"portada","t":"Lista de mercado mensual","c":"Listas de mercado","i":["🛒","🥚","🍚"],"alt":"Lista de mercado mensual para una familia colombiana"},
+    {"k":"lista","t":"Granos y despensa del mes","c":"Familia de 3 a 4","i":["Arroz · 10 lb","Fríjol · 2 lb","Lenteja · 2 lb","Harina de arepa · 3 kg","Aceite · 3 L","Café y panela","Atún · 6 latas"],"antes":"Proteínas","alt":"Lista de granos y despensa para el mercado del mes"},
+    {"k":"dato","t":"Revisa la despensa antes de salir","c":"Buena parte del sobrecosto del mercado viene de comprar lo que ya había en casa.","i":["🔎"],"antes":"Cómo usar esta lista sin gastar de más","alt":"Consejo: revisar la despensa antes de hacer mercado"}
+  ],
+  "como-ahorrar-en-el-mercado": [
+    {"k":"portada","t":"15 trucos para ahorrar en el mercado","c":"Ahorro","i":["💰","🛒","🥕"],"alt":"Trucos para ahorrar en el mercado en Colombia"},
+    {"k":"lista","t":"Antes de salir de casa","c":"Checklist","i":["Hacer la lista","Revisar la nevera","Planear el menú","Ponerle tope","No ir con hambre"],"antes":"En el supermercado","alt":"Checklist para antes de ir al supermercado"},
+    {"k":"dato","t":"Compara el precio por unidad, no por paquete","c":"El paquete grande no siempre es el más barato: mira el precio por gramo o por mililitro.","i":["⚖️"],"antes":"Dónde y cómo comprar","alt":"Consejo: comparar el precio por unidad en el supermercado"}
+  ],
+  "presupuesto-de-mercado-familiar": [
+    {"k":"portada","t":"Presupuesto de mercado familiar","c":"Ahorro","i":["📊","🧾","🛒"],"alt":"Cómo hacer un presupuesto de mercado familiar"},
+    {"k":"lista","t":"Reparto por categorías","c":"Ejemplo","i":["Proteínas · 30 %","Frutas y verduras · 20 %","Granos y despensa · 15 %","Aseo · 15 %","Lácteos · 10 %","Gustos · 10 %"],"antes":"Paso 4: divídelo por semanas o quincenas","alt":"Ejemplo de reparto del presupuesto de mercado por categorías"},
+    {"k":"dato","t":"Un presupuesto imposible se abandona en la segunda semana","c":"Empieza por lo que gastas hoy y ajusta mes a mes.","i":["🎯"],"antes":"Paso 6: revisa al final del mes","alt":"Consejo: hacer un presupuesto de mercado realista"}
+  ],
+  "lista-de-mercado-compartida": [
+    {"k":"portada","t":"Lista de mercado compartida","c":"Organización","i":["📱","👨‍👩‍👧","🛒"],"alt":"Lista de mercado compartida para toda la casa"},
+    {"k":"lista","t":"Lo que falta en casa","c":"Se actualiza en tiempo real","i":["Leche · 6 L","Huevos","Café","Papel higiénico","Detergente","Tomate"],"antes":"Cómo organizarla según tu hogar","alt":"Ejemplo de lista de mercado compartida con productos marcados"},
+    {"k":"dato","t":"Anota lo que se acaba en el momento","c":"La lista compartida solo funciona si nadie espera al día del mercado para recordar.","i":["✍️"],"antes":"La regla de oro: anotar en el momento","alt":"Consejo: anotar en la lista apenas se acaba algo"}
+  ],
+  "como-dividir-gastos-con-roommates": [
+    {"k":"portada","t":"Dividir gastos con roommates sin peleas","c":"Cuentas claras","i":["🏠","🤝","💸"],"alt":"Cómo dividir gastos con roommates"},
+    {"k":"lista","t":"Gastos comunes del apartamento","c":"Lo que es de todos","i":["Arriendo","Servicios","Internet","Aseo","Papel higiénico","Aceite y sal"],"antes":"2. Elijan un método de reparto","alt":"Lista de gastos comunes entre roommates"},
+    {"k":"dato","t":"Quien compra, registra","c":"Cada gasto común se anota en el momento, con el monto. No a fin de mes.","i":["🧾"],"antes":"4. Hagan cuentas con regularidad","alt":"Regla para dividir gastos: quien compra registra"}
+  ],
+  "cuentas-claras-en-pareja": [
+    {"k":"portada","t":"Cuentas claras en pareja","c":"Cuentas claras","i":["💑","🏡","💳"],"alt":"Cómo repartir los gastos de la casa en pareja"},
+    {"k":"lista","t":"Tres formas de repartir","c":"Elijan la que sientan justa","i":["Mitad y mitad","Proporcional al ingreso","Cuenta común"],"antes":"El problema real: el día a día","alt":"Tres formas de repartir gastos en pareja"},
+    {"k":"dato","t":"Diez minutos al mes valen más que mil reclamos","c":"Revisen juntos lo que puso cada uno y cuadren la diferencia.","i":["🗓️"],"antes":"Consejos para que funcione","alt":"Consejo para llevar cuentas claras en pareja"}
+  ],
+  "mercado-quincenal-o-mensual": [
+    {"k":"portada","t":"¿Mercado quincenal o mensual?","c":"Ahorro","i":["📅","🛍️","🥦"],"alt":"Mercado quincenal o mensual: cuál conviene"},
+    {"k":"lista","t":"La combinación que funciona","c":"Según el tipo de producto","i":["Mensual: granos y aseo","Quincenal: carnes y lácteos","Semanal: frutas y verduras"],"antes":"La combinación que suele funcionar mejor","alt":"Combinación de mercado mensual, quincenal y semanal"},
+    {"k":"dato","t":"Lo fresco comprado para un mes termina en la basura","c":"Frutas, verduras y pan: mejor cada semana.","i":["🥬"],"antes":"¿Cómo saber cuál te conviene?","alt":"Consejo: comprar los productos frescos cada semana"}
+  ],
+  "donde-es-mas-barato-hacer-mercado": [
+    {"k":"portada","t":"¿Dónde es más barato hacer mercado?","c":"Ahorro","i":["🏪","🧺","🍅"],"alt":"Dónde es más barato hacer mercado en Colombia"},
+    {"k":"lista","t":"Qué comprar en cada lugar","c":"Guía rápida","i":["Descuento: granos y aseo","Plaza: frutas y verduras","Hiper: promociones","Tienda: emergencias","Mayorista: volumen"],"antes":"Plaza de mercado","alt":"Guía de qué comprar en cada tipo de tienda"},
+    {"k":"dato","t":"Ir a tres lugares para ahorrar poco puede salir caro","c":"Suma el transporte y el tiempo antes de decidir.","i":["🚌"],"antes":"Cómo comparar precios de verdad","alt":"Consejo: sumar el transporte al comparar precios"}
+  ],
+  "despensa-basica-colombiana": [
+    {"k":"portada","t":"Despensa básica colombiana","c":"Listas de mercado","i":["🫘","🌽","☕"],"alt":"Despensa básica de una cocina colombiana"},
+    {"k":"lista","t":"Condimentos con sabor colombiano","c":"Que no falten","i":["Comino","Color (achiote)","Ajo","Pimienta","Laurel y tomillo","Caldo en cubos"],"antes":"Enlatados y conservas","alt":"Condimentos básicos de la cocina colombiana"},
+    {"k":"dato","t":"Primero entra, primero sale","c":"Lo nuevo atrás y lo viejo adelante: así nada se vence escondido.","i":["📦"],"antes":"Cómo mantener la despensa sin que se te acabe nada","alt":"Consejo para organizar la despensa"}
+  ],
+  "como-evitar-el-desperdicio-de-comida": [
+    {"k":"portada","t":"Cómo evitar el desperdicio de comida","c":"Ahorro","i":["🍎","♻️","🥖"],"alt":"Cómo evitar el desperdicio de comida en casa"},
+    {"k":"lista","t":"Se puede congelar","c":"Para que nada se dañe","i":["Carne y pollo","Pan y arepas","Frutas para jugo","Caldos","Cilantro picado"],"antes":"Al cocinar y comer","alt":"Alimentos que se pueden congelar"},
+    {"k":"dato","t":"Anota lo que botas durante dos semanas","c":"Ponerle precio a lo que se pierde motiva más que cualquier consejo.","i":["🗑️"],"antes":"¿Cuánto se ahorra?","alt":"Consejo: medir cuánta comida se bota"}
+  ],
+  "lista-de-mercado-para-una-persona": [
+    {"k":"portada","t":"Mercado para una persona","c":"Listas de mercado","i":["🧑","🍳","🛒"],"alt":"Lista de mercado para una persona que vive sola"},
+    {"k":"lista","t":"Despensa para uno","c":"Compra mensual","i":["Arroz · 3 lb","Lenteja · 1 lb","Pasta · 2","Harina de arepa · 1 kg","Avena","Atún · 4 latas"],"antes":"Proteínas (cada 15 días)","alt":"Lista de despensa para una persona"},
+    {"k":"dato","t":"Cocina una vez, come tres","c":"Una olla de lentejas el domingo, congelada en porciones, es almuerzo para varios días.","i":["🍲"],"antes":"¿Cuánto debería gastar?","alt":"Consejo para cocinar viviendo solo"}
+  ],
+  "mercado-saludable-y-economico": [
+    {"k":"portada","t":"Mercado saludable y económico","c":"Ahorro","i":["🥑","🥚","🍌"],"alt":"Mercado saludable y económico en Colombia"},
+    {"k":"lista","t":"Proteínas económicas","c":"Las que más rinden","i":["Huevos","Fríjol y lenteja","Garbanzo","Pollo por presas","Atún y sardinas"],"antes":"Frutas y verduras: compra lo que está en cosecha","alt":"Lista de proteínas económicas"},
+    {"k":"dato","t":"Lo que está en cosecha es más barato y más rico","c":"En la plaza verás qué abunda esta semana.","i":["🥭"],"antes":"Lo que más encarece el mercado (y no es tan saludable)","alt":"Consejo: comprar frutas de cosecha"}
+  ],
+  "lista-de-aseo-del-hogar": [
+    {"k":"portada","t":"Lista de aseo para el hogar","c":"Listas de mercado","i":["🧼","🧻","🧽"],"alt":"Lista de productos de aseo para el hogar"},
+    {"k":"lista","t":"Aseo de la cocina","c":"Que no falte","i":["Lavaloza","Esponjas","Limpiones","Desengrasante","Bolsas de basura","Servilletas"],"antes":"Baño","alt":"Lista de aseo para la cocina"},
+    {"k":"dato","t":"En aseo, la marca propia casi siempre gana","c":"Cloro, lavaloza, bolsas y servilletas: misma función, menor precio.","i":["🏷️"],"antes":"Para roommates y oficinas","alt":"Consejo: comprar productos de aseo de marca propia"}
+  ],
+  "menu-semanal-economico": [
+    {"k":"portada","t":"Menú semanal económico","c":"Organización","i":["🍽️","🫓","🍗"],"alt":"Menú semanal económico para una familia colombiana"},
+    {"k":"lista","t":"Almuerzos de la semana","c":"Lunes a domingo","i":["Fríjoles con arroz","Pollo guisado","Lentejas","Carne molida","Sopa de verduras","Sudado de pollo","Ajiaco o sancocho"],"antes":"Jueves","alt":"Almuerzos del menú semanal económico"},
+    {"k":"dato","t":"El sobrado de ayer es la comida de hoy","c":"Calentado, pollo desmechado y arroz frito: nada se bota.","i":["🍳"],"antes":"Lista de mercado para este menú (familia de 4)","alt":"Consejo: aprovechar los sobrados"}
+  ],
+  "lista-de-insumos-para-oficina": [
+    {"k":"portada","t":"Insumos de cafetería y aseo para oficina","c":"Negocios","i":["☕","🏢","🧻"],"alt":"Lista de insumos de cafetería y aseo para oficina"},
+    {"k":"lista","t":"Cafetería de la oficina","c":"Checklist","i":["Café","Azúcar y endulzante","Aromáticas","Leche o crema","Agua","Vasos y mezcladores"],"antes":"Aseo","alt":"Checklist de insumos de cafetería para oficina"},
+    {"k":"dato","t":"Que se acabe el café un lunes no es un detalle","c":"Un responsable de compras y una lista donde todos reportan lo que falta.","i":["⏰"],"antes":"No solo oficinas","alt":"Consejo para organizar las compras de la oficina"}
+  ],
+  "como-organizar-la-nevera": [
+    {"k":"portada","t":"Cómo organizar la nevera","c":"Organización","i":["🧊","🥛","🥕"],"alt":"Cómo organizar la nevera para que la comida dure más"},
+    {"k":"lista","t":"Mejor fuera de la nevera","c":"No refrigerar","i":["Papa","Cebolla cabezona","Ajo","Banano","Tomate sin madurar"],"antes":"El congelador, tu mejor aliado para ahorrar","alt":"Alimentos que no deben ir en la nevera"},
+    {"k":"dato","t":"La carne va en la repisa de abajo","c":"Es la zona más fría, y así no gotea sobre otros alimentos.","i":["🥩"],"antes":"Trucos para que nada se pierda","alt":"Dónde guardar la carne en la nevera"}
+  ],
+  "comprar-al-por-mayor": [
+    {"k":"portada","t":"¿Comprar al por mayor vale la pena?","c":"Ahorro","i":["📦","🧻","🍚"],"alt":"Cuándo vale la pena comprar al por mayor"},
+    {"k":"lista","t":"Sí conviene al por mayor","c":"No se dañan","i":["Papel higiénico","Detergente","Jabón","Bolsas","Arroz","Aceite"],"antes":"Cuándo no vale la pena","alt":"Productos que conviene comprar al por mayor"},
+    {"k":"dato","t":"Compren en grupo y repartan","c":"El bulto de arroz entre varias casas, con cuentas claras de quién pagó.","i":["🤝"],"antes":"Dónde comprar al por mayor","alt":"Consejo: hacer compras al por mayor en grupo"}
+  ],
+  "marcas-propias-supermercados": [
+    {"k":"portada","t":"Marcas propias: ¿valen la pena?","c":"Ahorro","i":["🏷️","🛒","🧴"],"alt":"Marcas propias de supermercado en Colombia"},
+    {"k":"lista","t":"Buenas en marca propia","c":"Ahorro con poco riesgo","i":["Arroz y azúcar","Sal y pasta","Enlatados","Cloro y lavaloza","Bolsas de basura","Servilletas"],"antes":"Dónde pensarlo dos veces","alt":"Productos que conviene comprar en marca propia"},
+    {"k":"dato","t":"Cambia un producto por mercado","c":"Prueba de a uno y anota lo que te funcionó.","i":["🧪"],"antes":"¿Cuánto se ahorra?","alt":"Consejo para probar marcas propias"}
+  ],
+  "lista-de-mercado-por-whatsapp": [
+    {"k":"portada","t":"Lista de mercado por WhatsApp","c":"Organización","i":["💬","🛒","📱"],"alt":"Cómo hacer la lista de mercado por WhatsApp"},
+    {"k":"dato","t":"«Se acabó el café y faltan 2 libras de arroz»","c":"El bot lo convierte en dos productos en la lista de la casa.","i":["🤖"],"antes":"Consejos para que la casa lo adopte","alt":"Ejemplo de mensaje al bot de lista de mercado por WhatsApp"},
+    {"k":"lista","t":"Así queda en la lista","c":"Lo ve toda la casa","i":["Café","Arroz · 2 lb","Leche","Pan","Detergente"],"antes":"Opción 1: una nota fijada","alt":"Lista de mercado ordenada a partir de mensajes de WhatsApp"}
+  ],
+  "mercado-para-estudiantes-universitarios": [
+    {"k":"portada","t":"Mercado para estudiantes","c":"Listas de mercado","i":["🎓","🍝","🥚"],"alt":"Mercado barato para estudiantes universitarios"},
+    {"k":"lista","t":"Comidas baratas y rápidas","c":"Para la semana de parciales","i":["Arroz con huevo y plátano","Pasta con atún","Lentejas en lote","Arepa con huevo","Avena con banano"],"antes":"Trucos para estudiantes","alt":"Comidas baratas y rápidas para estudiantes"},
+    {"k":"dato","t":"Los domicilios son la fuga número uno de la mesada","c":"Una despensa básica y un domingo de cocina te salvan la semana.","i":["🛵"],"antes":"Lleva la cuenta","alt":"Consejo para estudiantes: evitar los domicilios"}
+  ]
+}
