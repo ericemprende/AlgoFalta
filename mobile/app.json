@@ -48,6 +48,13 @@
           "microphonePermission": false
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d9885fdb-632e-4745-90db-0772aabb03d0"
+      }
+    },
+    "owner": "ericemprende"
   }
 }

@@ -1,17 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Linking, Platform, Pressable, Text, View } from 'react-native';
 import { Btn, Card, Empty, T, styles } from '@/components/ui';
-import { cop, supabase, WEB } from '@/lib/supabase';
+import { supabase, WEB } from '@/lib/supabase';
 import { font, useColors } from '@/lib/theme';
+import { TIENDAS_POR_PAIS } from '@/lib/tiendas';
 
-// Deben coincidir con STORES en supabase/functions/mercado-barato/precios.ts
-const TIENDAS = [
-  { id: 'exito', name: 'Éxito' }, { id: 'olimpica', name: 'Olímpica' }, { id: 'jumbo', name: 'Jumbo / Metro' }, { id: 'd1', name: 'D1' },
-  { id: 'carulla', name: 'Carulla' }, { id: 'megatiendas', name: 'Megatiendas' }, { id: 'mercaldas', name: 'Mercaldas' },
-];
+const PAISES: Record<string, string> = {
+  CO: 'Colombia', MX: 'México', PE: 'Perú', CL: 'Chile', EC: 'Ecuador', AR: 'Argentina',
+  PA: 'Panamá', CR: 'Costa Rica', GT: 'Guatemala', DO: 'Rep. Dominicana', ES: 'España',
+};
 const PRINCIPALES = 4;
-// Cadenas sin tienda en línea con catálogo público: no hay de dónde sacar sus precios.
-const SIN_CATALOGO = 'Ísimo, Ara y Makro';
+const MONEDA: Record<string, string> = { PE: 'S/', DO: 'RD$', CR: '₡', GT: 'Q', ES: '€' };
+// Precio en la moneda del país, con centavos solo donde se usan.
+const dinero = (n: number, pais: string) =>
+  `${MONEDA[pais] ?? '$'} ${n.toLocaleString('es-CO', { maximumFractionDigits: ['CO', 'CL', 'AR', 'MX'].includes(pais) ? 0 : 2 })}`;
+
+// Supermercados del país: los que tienen catálogo en línea se pueden comparar; los demás se muestran sin precios.
+// Si dos marcas comparten catálogo (Jumbo y Metro) se muestran juntas.
+function tiendasDe(pais: string) {
+  const lista = TIENDAS_POR_PAIS[pais] ?? [];
+  const alias = (id: string) => lista.filter((t) => t.alias && t.id === id).map((t) => t.name);
+  const conPrecios = lista.filter((t) => t.precios && !t.alias).map((t) => ({ id: t.id, name: [t.name, ...alias(t.id)].join(' / ') }));
+  const sinPrecios = lista.filter((t) => !t.precios).map((t) => t.name);
+  return { conPrecios, sinPrecios };
+}
 const PLAN: Record<string, string> = { free: 'Gratis', plus: 'Plus Hogar', pro: 'Pro Hogar' };
 
 type Pick = { cost: number; product: string; price: number; list: number; url: string; at: string } | null;
@@ -29,12 +41,31 @@ const hace = (iso: string) => {
 
 export function Ahorro({ id }: { id: string }) {
   const c = useColors();
-  const [stores, setStores] = useState(['exito', 'olimpica', 'jumbo']);
+  const [pais, setPais] = useState('CO');
+  const [cambiarPais, setCambiarPais] = useState(false);
+  const { conPrecios: TIENDAS, sinPrecios } = useMemo(() => tiendasDe(pais), [pais]);
+  const [stores, setStores] = useState<string[]>([]);
+  const money = (n: number) => dinero(n, pais);
   const [res, setRes] = useState<Resultado | null>(null);
   const [busy, setBusy] = useState(false);
   const [todas, setTodas] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const nombre = (s: string) => TIENDAS.find((t) => t.id === s)?.name ?? s;
+
+  // País del perfil: define qué supermercados se muestran.
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: p } = await supabase.from('profiles').select('country').eq('id', data.user.id).single();
+      if (p?.country && TIENDAS_POR_PAIS[p.country]) setPais(p.country);
+    });
+  }, []);
+  useEffect(() => { setStores(TIENDAS.slice(0, 3).map((t) => t.id)); setRes(null); }, [TIENDAS]);
+  const elegirPais = async (cc: string) => {
+    setPais(cc); setCambiarPais(false);
+    const { data } = await supabase.auth.getUser();
+    if (data.user) await supabase.from('profiles').update({ country: cc }).eq('id', data.user.id);
+  };
 
   const toggle = (s: string) => setStores((v) => (v.includes(s) ? v.filter((x) => x !== s) : [...v, s]));
   const armar = async () => {
@@ -50,6 +81,19 @@ export function Ahorro({ id }: { id: string }) {
       <Card>
         <T kind="h2">Armar mi mercado más barato</T>
         <T kind="muted">Elige los supermercados y te decimos dónde comprar cada cosa de tu lista para pagar menos.</T>
+        <Pressable onPress={() => setCambiarPais((v) => !v)} accessibilityRole="button">
+          <T style={{ fontFamily: font.bold }}>Supermercados de {PAISES[pais]} <Text style={{ color: c.accentInk }}>· Cambiar país</Text></T>
+        </Pressable>
+        {cambiarPais ? (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {Object.entries(PAISES).map(([cc, n]) => (
+              <Pressable key={cc} onPress={() => elegirPais(cc)} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, backgroundColor: cc === pais ? c.btn : c.soft }}>
+                <Text style={{ fontFamily: font.bold, color: cc === pais ? c.btnFg : c.fg }}>{n}</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : null}
+        {TIENDAS.length === 0 ? <T kind="muted">Todavía no hay supermercados de {PAISES[pais]} con precios en línea. Estamos trabajando en sumarlos.</T> : null}
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {TIENDAS.filter((t, i) => todas || i < PRINCIPALES || stores.includes(t.id)).map((t) => {
             const on = stores.includes(t.id);
@@ -60,14 +104,26 @@ export function Ahorro({ id }: { id: string }) {
               </Pressable>
             );
           })}
-          {!todas ? (
+          {!todas && (TIENDAS.length > PRINCIPALES || sinPrecios.length) ? (
             <Pressable onPress={() => setTodas(true)} accessibilityRole="button"
               style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: c.line }}>
               <Text style={{ fontFamily: font.bold, color: c.accentInk }}>+ Más supermercados</Text>
             </Pressable>
           ) : null}
         </View>
-        {todas ? <T kind="muted" style={{ fontSize: 12 }}>{SIN_CATALOGO} todavía no venden en línea, así que no podemos consultar sus precios.</T> : null}
+        {(todas || TIENDAS.length <= PRINCIPALES) && sinPrecios.length ? (
+          <View style={{ gap: 6 }}>
+            <T kind="label">Sin precios en línea todavía</T>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              {sinPrecios.map((n) => (
+                <View key={n} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: c.line }}>
+                  <Text style={{ fontFamily: font.bold, color: c.muted }}>{n}</Text>
+                </View>
+              ))}
+            </View>
+            <T kind="muted" style={{ fontSize: 12 }}>No tienen catálogo público en internet, así que aún no podemos consultar sus precios.</T>
+          </View>
+        ) : null}
         <Btn title={busy ? 'Consultando precios…' : 'Armar mi mercado más barato'} onPress={armar} loading={busy} disabled={stores.length === 0} />
         {err ? <T style={{ color: c.danger }}>{err}</T> : null}
       </Card>
@@ -77,10 +133,10 @@ export function Ahorro({ id }: { id: string }) {
           {res.items.length === 0 ? <Empty text="Tu lista está vacía. Agrega productos en la pestaña Lista." /> : (
             <Card style={{ backgroundColor: c.accent, borderColor: c.accent }}>
               <Text style={{ color: '#fff', fontFamily: font.bold }}>Comprando cada cosa donde está más barata</Text>
-              <Text style={{ color: '#fff', fontFamily: font.black, fontSize: 28 }}>{cop(res.combo)}</Text>
+              <Text style={{ color: '#fff', fontFamily: font.black, fontSize: 28 }}>{money(res.combo)}</Text>
               {res.savings > 0 && res.best_single ? (
                 <Text style={{ color: '#fff', fontFamily: font.bold }}>
-                  Ahorras {cop(res.savings)} frente a comprar todo en {res.best_single.name}
+                  Ahorras {money(res.savings)} frente a comprar todo en {res.best_single.name}
                 </Text>
               ) : null}
             </Card>
@@ -104,7 +160,7 @@ export function Ahorro({ id }: { id: string }) {
                 <View key={t.store} style={[styles.row, { justifyContent: 'space-between' }]}>
                   <T style={{ flex: 1 }}>{t.name}</T>
                   <T kind="muted">{t.found}/{res.items.length} productos</T>
-                  <T style={{ fontFamily: font.extra, minWidth: 90, textAlign: 'right' }}>{cop(t.total)}</T>
+                  <T style={{ fontFamily: font.extra, minWidth: 90, textAlign: 'right' }}>{money(t.total)}</T>
                 </View>
               ))}
             </Card>
@@ -118,12 +174,12 @@ export function Ahorro({ id }: { id: string }) {
                 style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: c.line, gap: 2 }}>
                 <View style={[styles.row, { justifyContent: 'space-between' }]}>
                   <T style={{ fontFamily: font.bold, flex: 1 }}>{it.name}{it.quantity ? ` · ${it.quantity}` : ''}</T>
-                  {b ? <T style={{ fontFamily: font.extra }}>{cop(b.cost)}</T> : null}
+                  {b ? <T style={{ fontFamily: font.extra }}>{money(b.cost)}</T> : null}
                 </View>
                 {b ? (
                   <>
                     <T style={{ color: c.accentInk, fontFamily: font.extra }}>{nombre(it.best!)}{b.list > b.price ? ' · en oferta' : ''}</T>
-                    <T kind="muted" style={{ fontSize: 12 }}>{b.product} · {cop(b.price)} · precio consultado {hace(b.at)}</T>
+                    <T kind="muted" style={{ fontSize: 12 }}>{b.product} · {money(b.price)} · precio consultado {hace(b.at)}</T>
                   </>
                 ) : <T kind="muted" style={{ fontSize: 12 }}>No lo encontramos en esos supermercados. Prueba con otro nombre o agrega la marca.</T>}
               </Pressable>

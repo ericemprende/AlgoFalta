@@ -1,15 +1,12 @@
 // Lógica pura de precios: consultar tiendas VTEX, leer tamaños y elegir el más barato por kilo/litro/unidad.
 // Sin base de datos, para poder probarla sola (ver docs/mercado-barato.md).
 
-export const STORES: Record<string, { name: string; base: string }> = {
-  exito: { name: "Éxito", base: "https://www.exito.com/io" },
-  carulla: { name: "Carulla", base: "https://www.carulla.com/io" },
-  jumbo: { name: "Jumbo / Metro", base: "https://www.jumbocolombia.com" },
-  olimpica: { name: "Olímpica", base: "https://www.olimpica.com" },
-  megatiendas: { name: "Megatiendas", base: "https://www.megatiendas.co" },
-  mercaldas: { name: "Mercaldas", base: "https://www.mercaldas.com" },
-  d1: { name: "D1", base: "https://www.d1.com.co" },
-};
+import { STORES } from "./tiendas.ts";
+// Supermercados con catálogo público por país: generados por docs/tiendas/generar.py.
+export { STORES };
+
+// Con centavos: en Perú, Panamá o Rep. Dominicana los precios no son enteros.
+const r2 = (n: number) => Math.round(n * 100) / 100;
 
 export type Product = { name: string; price: number; list: number; size: number | null; unit: string | null; url: string; image: string | null };
 export type Pick = { cost: number; product: string; price: number; list: number; url: string; image: string | null; at: string } | null;
@@ -47,7 +44,7 @@ export async function fetchStore(store: string, query: string): Promise<Product[
     const offer = p.items?.[0]?.sellers?.[0]?.commertialOffer;
     if (!offer || !offer.Price || offer.AvailableQuantity <= 0) continue;
     const sz = parseSize(`${p.productName} ${p.items?.[0]?.name ?? ""}`);
-    out.push({ name: p.productName, price: Math.round(offer.Price), list: Math.round(offer.ListPrice || offer.Price),
+    out.push({ name: p.productName, price: r2(offer.Price), list: r2(offer.ListPrice || offer.Price),
       size: sz?.size ?? null, unit: sz?.unit ?? null, url: `${site}/${p.linkText}/p`, image: p.items?.[0]?.images?.[0]?.imageUrl ?? null });
   }
   return out;
@@ -88,7 +85,7 @@ export function compare(quantity: string | null, perStore: { s: string; products
     for (const p of x.products.filter(ok)) {
       const u = ref ? p.price / p.size! : p.price;
       if (u < median * 0.45 || u > median * 3) continue;
-      const cost = ref ? Math.round((p.price / p.size!) * ref) : p.price;
+      const cost = ref ? r2((p.price / p.size!) * ref) : p.price;
       if (cost != null && (!best || cost < best.cost)) best = { p, cost };
     }
     byStore[x.s] = best ? { cost: best.cost, product: best.p.name, price: best.p.price, list: best.p.list, url: best.p.url, image: best.p.image ?? null, at: x.at } : null;

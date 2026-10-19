@@ -21,11 +21,21 @@ En la pestaña **Ahorro** de cada hogar, el usuario elige supermercados y toca �
 
 Se cambian en `public.cheapest_cart_limit()` (migración `20261019000000_mercado_barato.sql`). Los productos que pasan el límite aparecen como «quedaron por fuera», con invitación a ver los planes.
 
-## Tiendas
+## Tiendas por país
 
-Catálogo público VTEX: **Éxito, Carulla, Jumbo / Metro, Olímpica, Megatiendas, Mercaldas**. Makro no responde por esa vía. **D1 y Ara no tienen catálogo en línea**: para ellas el camino son precios colaborativos (lo que pagan los usuarios) o acuerdos.
+La pestaña Ahorro muestra los supermercados **del país del perfil** (se puede cambiar con «Cambiar país»). La lista sale de `landing/comercios.js` (125 supermercados en 11 países) y `docs/tiendas/generar.py` prueba cuáles tienen catálogo público VTEX con precios:
 
-Para agregar una tienda VTEX: probar `https://<dominio>/api/catalog_system/pub/products/search?ft=arroz` y sumarla a `STORES` en `supabase/functions/mercado-barato/precios.ts` y a `TIENDAS` en `mobile/src/components/Ahorro.tsx`.
+| País | Con precios en línea |
+|---|---|
+| Colombia | Éxito, Carulla, D1, Olímpica, Jumbo / Metro, Megatiendas, Mercaldas |
+| Argentina | Carrefour, Jumbo, Disco, Vea, ChangoMás |
+| Perú | Plaza Vea, Metro, Wong |
+| Panamá | El Machetazo, Xtra |
+| México | Chedraui |
+| Rep. Dominicana | La Sirena |
+| Chile, Ecuador, Costa Rica, Guatemala, España | Ninguno por ahora |
+
+Los demás (Ara, Makro, Ísimo, PriceSmart…) aparecen en gris como «sin precios en línea todavía». Para sumar uno: agregarlo a `comercios.js` y correr `python docs/tiendas/generar.py`, que regenera `supabase/functions/mercado-barato/tiendas.ts` y `mobile/src/lib/tiendas.ts`. Los precios se muestran en la moneda de cada país, con centavos donde se usan (migración `20261024000000_precios_con_centavos.sql`).
 
 ## Cómo se mantienen los precios al día
 

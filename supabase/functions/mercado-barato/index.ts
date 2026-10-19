@@ -55,9 +55,9 @@ async function savePrices(query: string, byStore: Record<string, { product: stri
   if (foto) await admin.from("catalog_products").update({ image_url: foto }).eq("query", query).is("image_url", null);
 }
 
-// Precio oficial de un producto en todas las tiendas.
+// Precio oficial de un producto en las tiendas de Colombia (el catálogo de la lista es colombiano por ahora).
 async function priceFor(query: string, force = false) {
-  const per = await Promise.all(Object.keys(STORES).map(async (s) => {
+  const per = await Promise.all(Object.keys(STORES).filter((s) => STORES[s].country === "CO").map(async (s) => {
     const r = await getProducts(s, query, force);
     return { s, at: r.at, products: relevant(query, r.products) };
   }));
