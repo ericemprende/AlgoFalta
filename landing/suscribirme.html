@@ -1,0 +1,117 @@
+<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Suscribirme · AlgoFalta</title><meta name="description" content="Activa Plus Hogar o Pro Hogar de AlgoFalta con tarjeta, PSE o Nequi a través de Mercado Pago.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap">
+<link rel="stylesheet" href="/legal-assets/legal.css">
+<style>
+.planes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.plan{border:2px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;background:var(--bg);color:var(--fg);font:inherit;text-align:left}
+.plan[aria-pressed="true"]{border-color:var(--brand);background:var(--soft)}
+.plan b{display:block;font-size:1.1rem;font-weight:900}
+.plan .pr{font-size:1.5rem;font-weight:900}
+.plan ul{margin:8px 0 0;padding-left:18px;font-size:.92rem;color:var(--muted)}
+.ciclo{display:flex;gap:8px;background:var(--soft);border-radius:999px;padding:4px;width:max-content}
+.ciclo button{border:0;border-radius:999px;padding:8px 16px;font:800 .95rem var(--font);background:transparent;color:var(--fg);cursor:pointer}
+.ciclo button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+label{display:block;font-weight:800;margin:14px 0 6px}
+input{width:100%;font:700 1.05rem var(--font);padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--fg)}
+.go{display:block;width:100%;margin-top:16px;border:0;border-radius:999px;padding:15px;font:900 1.05rem var(--font);background:var(--brand);color:#fff;cursor:pointer}
+.go:disabled{opacity:.5;cursor:default}
+.err{color:#B3261E;font-weight:700}
+.ok{background:var(--soft);border-radius:16px;padding:18px}
+[hidden]{display:none!important}
+@media (max-width:560px){.planes{grid-template-columns:1fr}}
+</style></head><body>
+<header><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 256 312" aria-hidden="true"><path d="M76 92 A52 52 0 0 1 180 92" fill="none" stroke="currentColor" stroke-width="30"/><path fill="currentColor" d="M0 116q0-20 20-20H136V164q0 4 4 4H204q4 0 4-4V96H236q20 0 20 20V246q0 66-66 66H66Q0 312 0 246Z"/></svg>AlgoFalta</a><button id="theme" type="button">Modo oscuro</button></div></header>
+<main class="wrap">
+<h1>Activa tu plan</h1>
+<p class="meta">Pago seguro con Mercado Pago: tarjeta, PSE o Nequi. Cancelas cuando quieras y conservas el plan hasta el final del periodo pagado.</p>
+
+<div id="listo" class="ok" hidden><b>¡Gracias!</b> Estamos confirmando tu pago con Mercado Pago. En unos minutos tu plan aparece activo en la app (Perfil). Si pagaste por PSE, puede tardar un poco más.</div>
+
+<div id="form">
+  <div class="ciclo" role="group" aria-label="Periodo">
+    <button type="button" data-c="monthly" aria-pressed="true">Mensual</button>
+    <button type="button" data-c="yearly" aria-pressed="false">Anual · 2 meses gratis</button>
+  </div>
+  <div class="planes">
+    <button class="plan" type="button" data-p="plus" aria-pressed="true"><b>Plus Hogar</b><span class="pr" data-m="12900" data-y="129000"></span>
+      <ul><li>Grupos ilimitados</li><li>Bot de WhatsApp con voz</li><li>Mercado más barato: 15 productos</li><li>Despensa y presupuesto</li></ul></button>
+    <button class="plan" type="button" data-p="pro" aria-pressed="false"><b>Pro Hogar</b><span class="pr" data-m="19900" data-y="199000"></span>
+      <ul><li>Todo lo de Plus Hogar</li><li>Mercado más barato con toda la lista, sin límite</li><li>Alertas de descuentos</li><li>Historial de precios</li></ul></button>
+  </div>
+
+  <div id="paso-correo">
+    <label for="email">Tu correo de AlgoFalta</label>
+    <input id="email" type="email" autocomplete="email" placeholder="tu@correo.com">
+    <p class="meta">Usa el mismo correo con el que entras a la app. Te enviamos un código para confirmar que eres tú.</p>
+    <button class="go" id="enviar" type="button">Enviarme el código</button>
+  </div>
+  <div id="paso-codigo" hidden>
+    <label for="code">Código que te llegó al correo</label>
+    <input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456">
+    <button class="go" id="verificar" type="button">Confirmar</button>
+  </div>
+  <div id="paso-pagar" hidden>
+    <p>Sesión iniciada como <b id="quien"></b>.</p>
+    <button class="go" id="pagar" type="button">Pagar con Mercado Pago</button>
+  </div>
+  <p class="err" id="err" role="alert"></p>
+  <p class="meta">Precios en pesos colombianos, IVA incluido. Al suscribirte aceptas los <a href="/terminos">Términos</a> y la <a href="/privacidad">Política de privacidad</a>.</p>
+</div>
+</main>
+<footer><div class="wrap"><span>© 2026 AlgoFalta · Hecho en Colombia</span><div class="links"><a href="/">Inicio</a><a href="/#planes">Planes</a><a href="/soporte">Soporte</a></div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/legal-assets/legal.js"></script>
+<script>
+(function(){
+  var sb = supabase.createClient('https://zsnxudrexkvakkhsjicx.supabase.co', 'sb_publishable_4Mf6w8HUX5wQpqJTfuYndg_dIT7MVU9');
+  var $ = function(id){ return document.getElementById(id); };
+  var q = new URLSearchParams(location.search);
+  var plan = q.get('plan') === 'pro' ? 'pro' : 'plus', ciclo = q.get('ciclo') === 'anual' ? 'yearly' : 'monthly';
+  if (q.get('listo')) { $('listo').hidden = false; $('form').hidden = true; return; }
+
+  function fmt(n){ return '$' + Number(n).toLocaleString('es-CO'); }
+  function pintar(){
+    document.querySelectorAll('.plan').forEach(function(b){
+      b.setAttribute('aria-pressed', b.dataset.p === plan);
+      var pr = b.querySelector('.pr');
+      pr.innerHTML = ciclo === 'yearly' ? fmt(pr.dataset.y) + ' <small>/año</small>' : fmt(pr.dataset.m) + ' <small>/mes</small>';
+    });
+    document.querySelectorAll('.ciclo button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.c === ciclo); });
+  }
+  document.querySelectorAll('.plan').forEach(function(b){ b.onclick = function(){ plan = b.dataset.p; pintar(); }; });
+  document.querySelectorAll('.ciclo button').forEach(function(b){ b.onclick = function(){ ciclo = b.dataset.c; pintar(); }; });
+  pintar();
+
+  function err(t){ $('err').textContent = t || ''; }
+  function listoParaPagar(email){ $('paso-correo').hidden = true; $('paso-codigo').hidden = true; $('paso-pagar').hidden = false; $('quien').textContent = email; }
+  sb.auth.getSession().then(function(r){ if (r.data.session) listoParaPagar(r.data.session.user.email); });
+
+  $('enviar').onclick = async function(){
+    err(); var email = $('email').value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err('Escribe un correo válido.');
+    this.disabled = true;
+    var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
+    this.disabled = false;
+    if (r.error) return err('No pudimos enviar el código. Inténtalo de nuevo en un minuto.');
+    $('paso-correo').hidden = true; $('paso-codigo').hidden = false; $('code').focus();
+  };
+  $('verificar').onclick = async function(){
+    err(); this.disabled = true;
+    var r = await sb.auth.verifyOtp({ email: $('email').value.trim().toLowerCase(), token: $('code').value.trim(), type: 'email' });
+    this.disabled = false;
+    if (r.error) return err('El código no es correcto o ya venció.');
+    listoParaPagar(r.data.user.email);
+  };
+  $('pagar').onclick = async function(){
+    err(); this.disabled = true; this.textContent = 'Abriendo Mercado Pago…';
+    var r = await sb.functions.invoke('pagos', { body: { plan: plan, cycle: ciclo } });
+    if (r.error || !r.data || !r.data.url) { this.disabled = false; this.textContent = 'Pagar con Mercado Pago'; return err('No pudimos abrir el pago. Inténtalo de nuevo o escríbenos a soporte@algofalta.com.'); }
+    location.href = r.data.url;
+  };
+})();
+</script>
+</body></html>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Linking, Pressable, Text, View } from 'react-native';
+import { Linking, Platform, Pressable, Text, View } from 'react-native';
 import { Btn, Card, Empty, T, styles } from '@/components/ui';
 import { cop, supabase, WEB } from '@/lib/supabase';
 import { font, useColors } from '@/lib/theme';
@@ -81,7 +81,8 @@ export function Ahorro({ id }: { id: string }) {
                 Tu plan {PLAN[res.plan] ?? res.plan} optimiza {res.limit} productos. {res.locked} {res.locked === 1 ? 'quedó' : 'quedaron'} por fuera.
               </T>
               <T kind="muted">Plus Hogar optimiza hasta 15 productos y Pro Hogar toda la lista, sin límite.</T>
-              <Btn title="Ver planes" kind="ghost" onPress={() => Linking.openURL(`${WEB}/#planes`)} />
+              {/* Google y Apple no permiten enlazar al pago web desde la app: el botón solo existe en la versión web. */}
+              {Platform.OS === 'web' ? <Btn title="Ver planes" kind="ghost" onPress={() => Linking.openURL(`${WEB}/suscribirme`)} /> : null}
             </Card>
           ) : null}
 
