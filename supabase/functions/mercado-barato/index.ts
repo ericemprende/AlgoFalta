@@ -2,7 +2,8 @@
 // Arma el mercado más barato de la lista de un hogar comparando precios de supermercados (catálogo público VTEX).
 //
 // POST { household_id, stores: string[] }            (usuario autenticado)
-// POST { mode: "refresh" } + header x-cron-secret    (cron nocturno: refresca las búsquedas más usadas)
+// POST { mode: "prices", names: string[] }          (usuario autenticado: precio oficial por producto, para la lista)
+// POST { mode: "refresh" } + header x-cron-secret    (cron nocturno: refresca el catálogo y las búsquedas más usadas)
 //
 // Precios: se consultan en vivo y se guardan 6 h en price_cache; cada precio visto queda en price_history
 // (base de las alertas de ofertas). Consulta prudente: pocas peticiones, con caché, mostrando la tienda y
@@ -22,7 +23,9 @@ const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE
 
 async function getProducts(store: string, query: string, force = false): Promise<{ products: Product[]; at: string }> {
   const { data } = await admin.from("price_cache").select("results, fetched_at, hits").eq("store", store).eq("query", query).maybeSingle();
-  if (data && !force && Date.now() - new Date(data.fetched_at).getTime() < FRESH_MS) {
+  // Resultados guardados antes de que se guardara la foto se vuelven a consultar para traerla.
+  const conFoto = (data?.results ?? []).every((p: Product) => "image" in p);
+  if (data && !force && conFoto && Date.now() - new Date(data.fetched_at).getTime() < FRESH_MS) {
     admin.from("price_cache").update({ hits: data.hits + 1 }).eq("store", store).eq("query", query).then();
     return { products: data.results, at: data.fetched_at };
   }
@@ -41,6 +44,28 @@ async function getProducts(store: string, query: string, force = false): Promise
   }
 }
 
+// Deja en product_prices lo elegido en cada tienda: la tabla que la app lee para mostrar precios reales.
+// La foto del más barato queda como foto del producto en el catálogo (si aún no tiene).
+async function savePrices(query: string, byStore: Record<string, { product: string; price: number; list: number; url: string; image?: string | null; at: string } | null>) {
+  const rows = Object.entries(byStore).filter(([, v]) => v)
+    .map(([store, v]) => ({ query, store, product: v!.product, price: v!.price, list_price: v!.list, url: v!.url, image_url: v!.image ?? null, updated_at: v!.at }));
+  if (!rows.length) return;
+  await admin.from("product_prices").upsert(rows, { onConflict: "query,store" });
+  const foto = rows.filter((r) => r.image_url).sort((a, b) => a.price - b.price)[0]?.image_url;
+  if (foto) await admin.from("catalog_products").update({ image_url: foto }).eq("query", query).is("image_url", null);
+}
+
+// Precio oficial de un producto en todas las tiendas.
+async function priceFor(query: string, force = false) {
+  const per = await Promise.all(Object.keys(STORES).map(async (s) => {
+    const r = await getProducts(s, query, force);
+    return { s, at: r.at, products: relevant(query, r.products) };
+  }));
+  const { byStore } = compare(null, per);
+  await savePrices(query, byStore);
+  return byStore;
+}
+
 async function pool<T>(tasks: (() => Promise<T>)[], n = 4): Promise<T[]> {
   const out: T[] = new Array(tasks.length); let i = 0;
   await Promise.all(Array.from({ length: n }, async () => { while (i < tasks.length) { const k = i++; out[k] = await tasks[k](); } }));
@@ -57,7 +82,10 @@ Deno.serve(async (req) => {
     const { data } = await admin.from("price_cache").select("store, query")
       .lt("fetched_at", new Date(Date.now() - 12 * 3600_000).toISOString()).order("hits", { ascending: false }).limit(200);
     await pool((data ?? []).filter((r) => STORES[r.store]).map((r) => () => getProducts(r.store, r.query, true)), 3);
-    return json({ refreshed: data?.length ?? 0 });
+    // Catálogo de la lista: todos sus productos con precio fresco cada mañana (usa la caché recién refrescada).
+    const { data: cat } = await admin.from("catalog_products").select("query").eq("active", true);
+    await pool((cat ?? []).map((c) => () => priceFor(c.query)), 3);
+    return json({ refreshed: data?.length ?? 0, catalog: cat?.length ?? 0 });
   }
 
   // ── Usuario: armar el mercado más barato ──
@@ -65,6 +93,14 @@ Deno.serve(async (req) => {
     { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } });
   const { data: { user: me } } = await user.auth.getUser();
   if (!me) return json({ error: "not_authenticated" }, 401);
+
+  // ── Usuario: precios oficiales de productos sueltos (la lista los pide cuando aún no los tiene) ──
+  if (body.mode === "prices") {
+    const names: string[] = [...new Set<string>((Array.isArray(body.names) ? body.names : []).map((n: unknown) => norm(String(n)).slice(0, 60)))]
+      .filter((n) => n.length >= 2).slice(0, 20);
+    const out = await pool(names.map((q) => async () => ({ query: q, byStore: await priceFor(q) })), 3);
+    return json({ prices: out });
+  }
 
   const household = String(body.household_id ?? "");
   const stores: string[] = [...new Set<string>(Array.isArray(body.stores) ? body.stores : [])].filter((s) => STORES[s]);
@@ -86,7 +122,9 @@ Deno.serve(async (req) => {
       const r = await getProducts(s, query);
       return { s, at: r.at, products: relevant(query, r.products) };
     }));
-    return { id: it.id, name: it.name, quantity: it.quantity, ...compare(it.quantity, per) };
+    const r = compare(it.quantity, per);
+    await savePrices(query, r.byStore);
+    return { id: it.id, name: it.name, quantity: it.quantity, ...r };
   }), 3);
 
   const cost = (r: (typeof rows)[number], s: string) => r.byStore[s]?.cost ?? 0;

@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Logo } from '@/components/Logo';
 import { SessionProvider, useSession } from '@/lib/session';
 import { font, useColors } from '@/lib/theme';
 
@@ -23,7 +24,7 @@ function Gate() {
         <Stack.Screen name="login" options={{ headerShown: false }} />
       </Stack.Protected>
       <Stack.Protected guard={!!session}>
-        <Stack.Screen name="index" options={{ title: 'AlgoFalta' }} />
+        <Stack.Screen name="index" options={{ headerTitle: () => <Logo /> }} />
         <Stack.Screen name="hogar/[id]" options={{ title: '' }} />
         <Stack.Screen name="perfil" options={{ title: 'Perfil' }} />
       </Stack.Protected>

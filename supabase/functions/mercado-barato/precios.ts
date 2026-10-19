@@ -8,10 +8,11 @@ export const STORES: Record<string, { name: string; base: string }> = {
   olimpica: { name: "Olímpica", base: "https://www.olimpica.com" },
   megatiendas: { name: "Megatiendas", base: "https://www.megatiendas.co" },
   mercaldas: { name: "Mercaldas", base: "https://www.mercaldas.com" },
+  d1: { name: "D1", base: "https://www.d1.com.co" },
 };
 
-export type Product = { name: string; price: number; list: number; size: number | null; unit: string | null; url: string };
-export type Pick = { cost: number; product: string; price: number; list: number; url: string; at: string } | null;
+export type Product = { name: string; price: number; list: number; size: number | null; unit: string | null; url: string; image: string | null };
+export type Pick = { cost: number; product: string; price: number; list: number; url: string; image: string | null; at: string } | null;
 
 export const norm = (s: string) =>
   s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9. ]+/g, " ").replace(/\s+/g, " ").trim();
@@ -47,7 +48,7 @@ export async function fetchStore(store: string, query: string): Promise<Product[
     if (!offer || !offer.Price || offer.AvailableQuantity <= 0) continue;
     const sz = parseSize(`${p.productName} ${p.items?.[0]?.name ?? ""}`);
     out.push({ name: p.productName, price: Math.round(offer.Price), list: Math.round(offer.ListPrice || offer.Price),
-      size: sz?.size ?? null, unit: sz?.unit ?? null, url: `${site}/${p.linkText}/p` });
+      size: sz?.size ?? null, unit: sz?.unit ?? null, url: `${site}/${p.linkText}/p`, image: p.items?.[0]?.images?.[0]?.imageUrl ?? null });
   }
   return out;
 }
@@ -90,7 +91,7 @@ export function compare(quantity: string | null, perStore: { s: string; products
       const cost = ref ? Math.round((p.price / p.size!) * ref) : p.price;
       if (cost != null && (!best || cost < best.cost)) best = { p, cost };
     }
-    byStore[x.s] = best ? { cost: best.cost, product: best.p.name, price: best.p.price, list: best.p.list, url: best.p.url, at: x.at } : null;
+    byStore[x.s] = best ? { cost: best.cost, product: best.p.name, price: best.p.price, list: best.p.list, url: best.p.url, image: best.p.image ?? null, at: x.at } : null;
   }
   const found = Object.entries(byStore).filter(([, v]) => v) as [string, NonNullable<Pick>][];
   const best = found.sort((a, b) => a[1].cost - b[1].cost)[0]?.[0] ?? null;

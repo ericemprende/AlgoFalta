@@ -86,15 +86,20 @@
   function byId(id) { return items.filter(function (i) { return i.id === id; })[0]; }
   function def(id) { return DEF.filter(function (i) { return i.id === id; })[0]; }
 
-  function emailHtml(i) {
+  // Variables de Supabase Auth para exportar las plantillas de autenticación (Supabase no conoce el nombre).
+  var SUPA = { nombre: "", correo: "{{ .Email }}", enlace: "{{ .ConfirmationURL }}", codigo: "{{ .Token }}" };
+  function emailHtml(i, vars, href) {
+    vars = vars || SAMPLE;
     var m = i.tipo === "M";
-    var paras = fill(i.b, SAMPLE).split("\n\n").map(function (p) { return "<p style='margin:0 0 14px'>" + esc(p).replace(/\n/g, "<br>") + "</p>"; }).join("");
+    var body = fill(i.b, vars).replace(/Hola ,/g, "Hola,");
+    var big = /\{\{codigo\}\}/.test(i.b) && !i.cta ? "<p style='margin:18px 0;font-size:34px;font-weight:900;letter-spacing:8px;color:#D9366B'>" + esc(vars.codigo) + "</p>" : "";
+    var paras = body.split("\n\n").map(function (p) { return "<p style='margin:0 0 14px'>" + esc(p).replace(/\n/g, "<br>") + "</p>"; }).join("");
     return "<!doctype html><meta charset='utf-8'><body style='margin:0;background:#FFF4F7;font-family:Nunito,Arial,sans-serif;color:#302036'>" +
-      "<div style='display:none;max-height:0;overflow:hidden'>" + esc(fill(i.p, SAMPLE)) + "</div>" +
+      "<div style='display:none;max-height:0;overflow:hidden'>" + esc(fill(i.p, vars)) + "</div>" +
       "<table width='100%' cellpadding='0' cellspacing='0'><tr><td align='center' style='padding:24px 12px'><table width='560' style='max-width:100%;background:#fff;border-radius:16px;overflow:hidden'>" +
       "<tr><td style='background:linear-gradient(135deg,#E83E75,#D9366B);padding:20px 28px;color:#fff;font-weight:900;font-size:22px'>AlgoFalta</td></tr>" +
-      "<tr><td style='padding:28px;font-size:16px;line-height:1.6'>" + paras +
-      (i.cta ? "<p style='margin:22px 0 4px'><a href='#' style='background:#302036;color:#fff;text-decoration:none;font-weight:800;padding:13px 22px;border-radius:14px;display:inline-block'>" + esc(i.cta) + "</a></p>" : "") + "</td></tr>" +
+      "<tr><td style='padding:28px;font-size:16px;line-height:1.6'>" + paras + big +
+      (i.cta ? "<p style='margin:22px 0 4px'><a href='" + esc(href || "#") + "' style='background:#302036;color:#fff;text-decoration:none;font-weight:800;padding:13px 22px;border-radius:14px;display:inline-block'>" + esc(i.cta) + "</a></p>" : "") + "</td></tr>" +
       "<tr><td style='padding:16px 28px 24px;font-size:12px;color:#6b5a70;border-top:1px solid #f1dce4'>" + esc(cfg.pie) + "<br>¿Dudas? Escríbenos a " + esc(cfg.reply) +
       (m ? "<br>Recibes este correo porque te registraste en AlgoFalta. <a href='#' style='color:#D9366B'>Darme de baja</a> · <a href='#' style='color:#D9366B'>Preferencias</a>" : "") +
       "</td></tr></table></td></tr></table></body>";
@@ -107,7 +112,9 @@
     var origin = i.tipo === "M" ? cfg.nomM + " &lt;" + esc(cfg.mailM) + "&gt;" : cfg.nomT + " &lt;" + esc(cfg.mailT) + "&gt;";
     box.innerHTML = '<div class="row" style="justify-content:space-between"><h2 style="margin:0">' + esc(i.n) + "</h2><button class='btn ghost' id='eCerrar'>Cerrar</button></div>" +
       '<p class="note">' + esc(disp(i)) + " · " + (i.tipo === "M" ? "Marketing: se envía solo a quien aceptó recibirlo y siempre lleva enlace de baja." : "Transaccional: no necesita consentimiento de marketing.") + " · Se envía desde " + origin + "</p>" +
-      (i.g === "auth" ? '<p class="warnbox">En producción este correo lo envía Supabase Auth: copia el asunto y el texto en <i>Authentication → Email Templates</i> usando sus variables (<code>{{ .ConfirmationURL }}</code>, <code>{{ .Token }}</code>).</p>' : "") +
+      (i.g === "auth" ? '<div class="warnbox">Este correo lo envía Supabase Auth. Guarda los cambios, copia el asunto y el HTML y pégalos en <i>Authentication → Emails</i> (vista <i>Source</i>). Ya van con las variables de Supabase; <code>{{nombre}}</code> se omite porque Supabase no lo conoce.' +
+        (i.id === "auth-codigo" ? " Pégalo en <b>Magic link or OTP</b> y también en <b>Confirm sign up</b>: la app entra con código en ambos casos." : "") +
+        '<div class="row" style="margin-top:8px"><button class="btn ghost" id="eCopyS" type="button">Copiar asunto</button><button class="btn ghost" id="eCopyH" type="button">Copiar HTML para Supabase</button></div></div>' : "") +
       '<div class="grid" style="margin-top:12px">' +
       '<label style="grid-column:1/-1">Asunto<input id="eS" value="' + esc(i.s) + '"></label>' +
       '<label style="grid-column:1/-1">Texto de vista previa (preheader)<input id="eP" value="' + esc(i.p) + '"></label>' +
@@ -127,6 +134,9 @@
     $("eGuardar").onclick = function () { leer(); persist(); renderTabla(); $("eMsg").textContent = "Guardado " + new Date().toLocaleTimeString("es-CO"); };
     $("eRest").onclick = function () { var d = def(i.id); i.s = d.s; i.p = d.p; i.b = d.b; i.cta = d.cta; i.d = d.d; persist(); renderEditor(); };
     $("ePruebaBtn").onclick = function () { var a = $("ePrueba").value.trim(); $("eMsg").textContent = a ? "Prueba enviada a " + a + " (simulado en el prototipo)" : "Escribe un correo para la prueba"; };
+    function copiar(txt, ok) { (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { $("eMsg").textContent = ok; }, function () { window.prompt("Copia con Ctrl+C:", txt); }); }
+    if ($("eCopyS")) $("eCopyS").onclick = function () { leer(); copiar(fill(i.s, SUPA).replace(/\s+:/g, ":"), "Asunto copiado"); };
+    if ($("eCopyH")) $("eCopyH").onclick = function () { leer(); copiar(emailHtml(i, SUPA, "{{ .ConfirmationURL }}"), "HTML copiado: pégalo en Supabase (Source)"); };
     $("eCerrar").onclick = function () { sel = null; renderTabla(); renderEditor(); };
     prev();
   }

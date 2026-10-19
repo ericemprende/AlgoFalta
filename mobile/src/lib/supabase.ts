@@ -1,6 +1,8 @@
-import 'expo-sqlite/localStorage/install';
 import { createClient } from '@supabase/supabase-js';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
+
+// En el teléfono la sesión se guarda con expo-sqlite; en el navegador, en el localStorage normal.
+if (Platform.OS !== 'web') require('expo-sqlite/localStorage/install');
 
 // Valores públicos (la clave publishable es segura en la app; los datos los protege RLS).
 const SUPABASE_URL = 'https://zsnxudrexkvakkhsjicx.supabase.co';

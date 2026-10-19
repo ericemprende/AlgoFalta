@@ -36,6 +36,17 @@ Para agregar una tienda VTEX: probar `https://<dominio>/api/catalog_system/pub/p
 
 La app muestra «precio consultado hace X h» y el aviso «precios de referencia, pueden variar en tu sede».
 
+## Precios oficiales en la lista (base de precios)
+
+*18-oct-2026.* La pestaña **Lista** muestra junto a cada producto el precio más barato hoy en las tiendas en línea y en cuál. No hay precios escritos a mano: todos salen de los catálogos públicos de las tiendas.
+
+- **`catalog_products`**: productos frecuentes (nombre, categoría, emoji, presentación). Es la cuadrícula para agregar con un toque. Para sumar productos basta con insertar filas.
+- **`product_prices`**: por producto y tienda, el producto exacto elegido (comparado por kilo, litro o unidad), su precio, el precio antes de descuento, el enlace y la fecha. La leen todos los usuarios con sesión y solo la escribe la función.
+- **Cómo crece:** cada consulta de Ahorro guarda lo encontrado. La lista pide `{ mode: "prices", names }` para lo que aún no tiene precio (máximo 20 por llamada). El cron nocturno refresca todo el catálogo. Cada nombre nuevo que escriben los usuarios queda en la base.
+- Lo que no se vende en línea (tienda de barrio, D1, Ara) queda «sin precio en tiendas» y no suma al total.
+
+Para activarlo: aplicar `20261020000000_precios_oficiales.sql` y volver a desplegar la función `mercado-barato`.
+
 ## Siguiente fase: alertas de ofertas
 
 Con `price_history` ya guardándose:

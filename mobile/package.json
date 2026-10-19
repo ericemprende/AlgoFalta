@@ -8,6 +8,7 @@
     "expo": "~57.0.30",
     "expo-constants": "~57.0.22",
     "expo-font": "~57.0.4",
+    "expo-image-picker": "~57.0.20",
     "expo-linking": "~57.0.13",
     "expo-router": "~57.0.28",
     "expo-sqlite": "~57.0.4",
@@ -27,7 +28,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "web:build": "expo export -p web && node -e \"require('fs').copyFileSync('web/vercel.json','dist/vercel.json')\"",
+    "web:deploy": "npm run web:build && vercel deploy dist --prod"
   },
   "private": true
 }

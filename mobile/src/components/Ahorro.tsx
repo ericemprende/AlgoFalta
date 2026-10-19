@@ -6,9 +6,12 @@ import { font, useColors } from '@/lib/theme';
 
 // Deben coincidir con STORES en supabase/functions/mercado-barato/precios.ts
 const TIENDAS = [
-  { id: 'exito', name: 'Éxito' }, { id: 'carulla', name: 'Carulla' }, { id: 'jumbo', name: 'Jumbo / Metro' },
-  { id: 'olimpica', name: 'Olímpica' }, { id: 'megatiendas', name: 'Megatiendas' }, { id: 'mercaldas', name: 'Mercaldas' },
+  { id: 'exito', name: 'Éxito' }, { id: 'olimpica', name: 'Olímpica' }, { id: 'jumbo', name: 'Jumbo / Metro' }, { id: 'd1', name: 'D1' },
+  { id: 'carulla', name: 'Carulla' }, { id: 'megatiendas', name: 'Megatiendas' }, { id: 'mercaldas', name: 'Mercaldas' },
 ];
+const PRINCIPALES = 4;
+// Cadenas sin tienda en línea con catálogo público: no hay de dónde sacar sus precios.
+const SIN_CATALOGO = 'Ísimo, Ara y Makro';
 const PLAN: Record<string, string> = { free: 'Gratis', plus: 'Plus Hogar', pro: 'Pro Hogar' };
 
 type Pick = { cost: number; product: string; price: number; list: number; url: string; at: string } | null;
@@ -29,6 +32,7 @@ export function Ahorro({ id }: { id: string }) {
   const [stores, setStores] = useState(['exito', 'olimpica', 'jumbo']);
   const [res, setRes] = useState<Resultado | null>(null);
   const [busy, setBusy] = useState(false);
+  const [todas, setTodas] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const nombre = (s: string) => TIENDAS.find((t) => t.id === s)?.name ?? s;
 
@@ -47,7 +51,7 @@ export function Ahorro({ id }: { id: string }) {
         <T kind="h2">Armar mi mercado más barato</T>
         <T kind="muted">Elige los supermercados y te decimos dónde comprar cada cosa de tu lista para pagar menos.</T>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-          {TIENDAS.map((t) => {
+          {TIENDAS.filter((t, i) => todas || i < PRINCIPALES || stores.includes(t.id)).map((t) => {
             const on = stores.includes(t.id);
             return (
               <Pressable key={t.id} onPress={() => toggle(t.id)} accessibilityRole="checkbox" accessibilityState={{ checked: on }}
@@ -56,7 +60,14 @@ export function Ahorro({ id }: { id: string }) {
               </Pressable>
             );
           })}
+          {!todas ? (
+            <Pressable onPress={() => setTodas(true)} accessibilityRole="button"
+              style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: c.line }}>
+              <Text style={{ fontFamily: font.bold, color: c.accentInk }}>+ Más supermercados</Text>
+            </Pressable>
+          ) : null}
         </View>
+        {todas ? <T kind="muted" style={{ fontSize: 12 }}>{SIN_CATALOGO} todavía no venden en línea, así que no podemos consultar sus precios.</T> : null}
         <Btn title={busy ? 'Consultando precios…' : 'Armar mi mercado más barato'} onPress={armar} loading={busy} disabled={stores.length === 0} />
         {err ? <T style={{ color: c.danger }}>{err}</T> : null}
       </Card>

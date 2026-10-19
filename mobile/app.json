@@ -39,7 +39,15 @@
       "expo-router",
       "expo-status-bar",
       "expo-sqlite",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "AlgoFalta usa tus fotos solo para que elijas tu foto de perfil.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ]
     ]
   }
 }

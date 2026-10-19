@@ -1,6 +1,6 @@
 import { Link, router, Stack, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { Btn, Card, Empty, Field, Screen, T } from '@/components/ui';
 import { errorText, supabase } from '@/lib/supabase';
 import { font, useColors } from '@/lib/theme';
@@ -51,9 +51,13 @@ export default function Hogares() {
       <T kind="h1">Tus hogares</T>
       {homes === null ? null : homes.length === 0 ? <Empty text="Todavía no tienes hogares. Crea uno o únete con un código." /> : homes.map((h) => (
         <Pressable key={h.id} onPress={() => router.push({ pathname: '/hogar/[id]', params: { id: h.id } })}>
-          <Card style={{ backgroundColor: c.soft, borderColor: c.soft }}>
-            <T kind="h2">{h.name}</T>
-            <T kind="muted">Ver lista y cuentas</T>
+          <Card style={{ backgroundColor: c.soft, borderColor: c.soft, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+            <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: c.bg, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 28 }}>🏠</Text></View>
+            <View style={{ flex: 1 }}>
+              <T kind="h2">{h.name}</T>
+              <T kind="muted">Lista, ahorro y cuentas</T>
+            </View>
+            <Text style={{ fontFamily: font.black, fontSize: 22, color: c.accentInk }}>›</Text>
           </Card>
         </Pressable>
       ))}
